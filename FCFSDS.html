@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FCFS Disk Scheduling</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      padding: 2rem;
+      text-align: center;
+    }
+    input, button {
+      padding: 0.5rem;
+      margin: 0.5rem;
+      border: none;
+      border-radius: 5px;
+    }
+    .output {
+      margin-top: 2rem;
+      background: rgba(255,255,255,0.1);
+      padding: 1rem;
+      border-radius: 10px;
+    }
+    table {
+      margin: auto;
+      border-collapse: collapse;
+      background-color: rgba(255,255,255,0.2);
+    }
+    th, td {
+      padding: 0.5rem;
+      border: 1px solid #fff;
+    }
+  </style>
+</head>
+<body>
+  <h1>FCFS Disk Scheduling Simulator</h1>
+
+  <label>Enter Initial Head Position:</label>
+  <input type="number" id="head" min="0">
+  <br>
+  <label>Enter Disk Queue (comma-separated):</label>
+  <input type="text" id="queue">
+  <br>
+  <button onclick="simulateFCFS()">Simulate</button>
+
+  <div class="output" id="output"></div>
+
+  <script>
+    function simulateFCFS() {
+      const head = parseInt(document.getElementById('head').value);
+      const queue = document.getElementById('queue').value.split(',').map(Number);
+      let seekSequence = [head];
+      let totalSeekTime = 0;
+
+      for (let i = 0; i < queue.length; i++) {
+        totalSeekTime += Math.abs(queue[i] - seekSequence[seekSequence.length - 1]);
+        seekSequence.push(queue[i]);
+      }
+
+      let result = `<h2>FCFS Execution</h2><p>Seek Sequence: ${seekSequence.join(' → ')}</p>`;
+      result += `<p>Total Seek Time: ${totalSeekTime}</p>`;
+      result += `<p>Average Seek Time: ${(totalSeekTime / queue.length).toFixed(2)}</p>`;
+
+      document.getElementById('output').innerHTML = result;
+    }
+  </script>
+</body>
+</html>
