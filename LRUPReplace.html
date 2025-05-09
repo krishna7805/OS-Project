@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FIFO Page Replacement</title>
+  <title>LRU Page Replacement</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to right, #ff5f6d, #ffc371);
+      background: linear-gradient(to right, #00c6ff, #0072ff);
       color: #fff;
       padding: 2rem;
       text-align: center;
@@ -29,7 +29,7 @@
 
     button {
       background: #fff;
-      color: #ff5f6d;
+      color: #0072ff;
       font-weight: bold;
       cursor: pointer;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
@@ -37,7 +37,7 @@
     }
 
     button:hover {
-      background: #ffd7b5;
+      background: #cfe9ff;
     }
 
     .output {
@@ -80,7 +80,7 @@
   </style>
 </head>
 <body>
-  <h1>🚀 FIFO Page Replacement Simulator</h1>
+  <h1>🧠 LRU Page Replacement Simulator</h1>
 
   <label>Number of Frames:</label>
   <input type="number" id="frames" min="1" placeholder="e.g. 3">
@@ -88,17 +88,18 @@
   <label>Page Reference String (comma-separated):</label>
   <input type="text" id="referenceString" placeholder="e.g. 7, 0, 1, 2, 0, 3">
   <br>
-  <button onclick="simulateFIFO()">Simulate FIFO</button>
+  <button onclick="simulateLRU()">Simulate LRU</button>
 
   <div class="output" id="output"></div>
 
   <script>
-    function simulateFIFO() {
+    function simulateLRU() {
       const framesCount = parseInt(document.getElementById("frames").value);
       const referenceString = document.getElementById("referenceString").value.split(',').map(Number);
       let frames = [], pageFaults = 0, resultHTML = "";
+      let recentUse = new Map();
 
-      resultHTML += `<h2>📊 FIFO Simulation Steps</h2>`;
+      resultHTML += `<h2>🧩 LRU Simulation Steps</h2>`;
       resultHTML += `<table><tr><th>Step</th><th>Page</th><th>Frames</th><th>Page Fault</th></tr>`;
 
       for (let i = 0; i < referenceString.length; i++) {
@@ -110,11 +111,20 @@
           if (frames.length < framesCount) {
             frames.push(page);
           } else {
-            frames.shift();
-            frames.push(page);
+            // Find the least recently used page
+            let lruPage = null, minIndex = Infinity;
+            for (let frame of frames) {
+              if (recentUse.has(frame) && recentUse.get(frame) < minIndex) {
+                minIndex = recentUse.get(frame);
+                lruPage = frame;
+              }
+            }
+            const replaceIndex = frames.indexOf(lruPage);
+            frames[replaceIndex] = page;
           }
           pageFaults++;
         }
+        recentUse.set(page, i); // update last used time
 
         resultHTML += `<tr>
           <td>${i + 1}</td>

@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FIFO Page Replacement</title>
+  <title>Optimal Page Replacement</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to right, #ff5f6d, #ffc371);
+      background: linear-gradient(to right, #00c9ff, #92fe9d);
       color: #fff;
       padding: 2rem;
       text-align: center;
@@ -29,7 +29,7 @@
 
     button {
       background: #fff;
-      color: #ff5f6d;
+      color: #00a4ff;
       font-weight: bold;
       cursor: pointer;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
@@ -37,7 +37,7 @@
     }
 
     button:hover {
-      background: #ffd7b5;
+      background: #e0f9ff;
     }
 
     .output {
@@ -55,7 +55,7 @@
       border-collapse: collapse;
       background-color: rgba(255, 255, 255, 0.1);
       color: #fff;
-      width: 80%;
+      width: 85%;
     }
 
     th, td {
@@ -80,7 +80,7 @@
   </style>
 </head>
 <body>
-  <h1>🚀 FIFO Page Replacement Simulator</h1>
+  <h1>🔮 Optimal Page Replacement Simulator</h1>
 
   <label>Number of Frames:</label>
   <input type="number" id="frames" min="1" placeholder="e.g. 3">
@@ -88,17 +88,17 @@
   <label>Page Reference String (comma-separated):</label>
   <input type="text" id="referenceString" placeholder="e.g. 7, 0, 1, 2, 0, 3">
   <br>
-  <button onclick="simulateFIFO()">Simulate FIFO</button>
+  <button onclick="simulateOptimal()">Simulate Optimal</button>
 
   <div class="output" id="output"></div>
 
   <script>
-    function simulateFIFO() {
+    function simulateOptimal() {
       const framesCount = parseInt(document.getElementById("frames").value);
       const referenceString = document.getElementById("referenceString").value.split(',').map(Number);
       let frames = [], pageFaults = 0, resultHTML = "";
 
-      resultHTML += `<h2>📊 FIFO Simulation Steps</h2>`;
+      resultHTML += `<h2>🔍 Optimal Replacement Steps</h2>`;
       resultHTML += `<table><tr><th>Step</th><th>Page</th><th>Frames</th><th>Page Fault</th></tr>`;
 
       for (let i = 0; i < referenceString.length; i++) {
@@ -107,11 +107,23 @@
 
         if (!frames.includes(page)) {
           pageFault = true;
+
           if (frames.length < framesCount) {
             frames.push(page);
           } else {
-            frames.shift();
-            frames.push(page);
+            // Find the page that is not used for the longest time in the future
+            let farthestIndex = -1, indexToReplace = -1;
+            for (let j = 0; j < frames.length; j++) {
+              let nextUse = referenceString.slice(i + 1).indexOf(frames[j]);
+              if (nextUse === -1) {
+                indexToReplace = j;
+                break;
+              } else if (nextUse > farthestIndex) {
+                farthestIndex = nextUse;
+                indexToReplace = j;
+              }
+            }
+            frames[indexToReplace] = page;
           }
           pageFaults++;
         }
@@ -124,7 +136,7 @@
         </tr>`;
       }
 
-      resultHTML += `</table><h3>🔥 Total Page Faults: ${pageFaults}</h3>`;
+      resultHTML += `</table><h3>🚨 Total Page Faults: ${pageFaults}</h3>`;
       document.getElementById("output").innerHTML = resultHTML;
     }
   </script>
