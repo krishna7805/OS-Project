@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Banker's Algorithm Simulator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #43cea2, #185a9d);
+      color: white;
+      text-align: center;
+      padding: 2rem;
+    }
+    input, button {
+      padding: 0.5rem;
+      margin: 0.5rem;
+      border-radius: 5px;
+      border: none;
+    }
+    table {
+      margin: 1rem auto;
+      border-collapse: collapse;
+      width: 90%;
+    }
+    th, td {
+      border: 1px solid #fff;
+      padding: 0.5rem;
+    }
+    .output {
+      background: rgba(255,255,255,0.1);
+      padding: 1rem;
+      border-radius: 10px;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Banker's Algorithm Simulator</h1>
+  <label>Processes:</label>
+  <input type="number" id="n" min="1" />
+  <label>Resources:</label>
+  <input type="number" id="m" min="1" />
+  <button onclick="generateInputFields()">Generate Matrices</button>
+  <form id="matrixForm"></form>
+  <button onclick="runBankersAlgorithm()">Run Banker's Algorithm</button>
+  <div class="output" id="output"></div>
+
+  <script>
+    function generateInputFields() {
+      const n = parseInt(document.getElementById('n').value);
+      const m = parseInt(document.getElementById('m').value);
+      const form = document.getElementById('matrixForm');
+      form.innerHTML = '';
+      form.innerHTML += '<h3>Allocation Matrix</h3>';
+      for (let i = 0; i < n; i++) {
+        for (let j = 0; j < m; j++) {
+          form.innerHTML += `<input type="number" id="alloc${i}${j}" value="0">`;
+        }
+        form.innerHTML += '<br>';
+      }
+      form.innerHTML += '<h3>Maximum Matrix</h3>';
+      for (let i = 0; i < n; i++) {
+        for (let j = 0; j < m; j++) {
+          form.innerHTML += `<input type="number" id="max${i}${j}" value="0">`;
+        }
+        form.innerHTML += '<br>';
+      }
+      form.innerHTML += '<h3>Available Resources</h3>';
+      for (let j = 0; j < m; j++) {
+        form.innerHTML += `<input type="number" id="avail${j}" value="0">`;
+      }
+    }
+
+    function runBankersAlgorithm() {
+      const n = parseInt(document.getElementById('n').value);
+      const m = parseInt(document.getElementById('m').value);
+      let Allocation = [], Max = [], Need = [], Available = [];
+
+      for (let i = 0; i < n; i++) {
+        Allocation[i] = [], Max[i] = [], Need[i] = [];
+        for (let j = 0; j < m; j++) {
+          Allocation[i][j] = parseInt(document.getElementById(`alloc${i}${j}`).value);
+          Max[i][j] = parseInt(document.getElementById(`max${i}${j}`).value);
+          Need[i][j] = Max[i][j] - Allocation[i][j];
+        }
+      }
+      for (let j = 0; j < m; j++) {
+        Available[j] = parseInt(document.getElementById(`avail${j}`).value);
+      }
+      let finish = new Array(n).fill(false);
+      let safeSequence = [];
+
+      for (let k = 0; k < n; k++) {
+        let found = false;
+        for (let i = 0; i < n; i++) {
+          if (!finish[i]) {
+            let canAllocate = true;
+            for (let j = 0; j < m; j++) {
+              if (Need[i][j] > Available[j]) {
+                canAllocate = false;
+                break;
+              }
+            }
+            if (canAllocate) {
+              for (let j = 0; j < m; j++) {
+                Available[j] += Allocation[i][j];
+              }
+              safeSequence.push(`P${i}`);
+              finish[i] = true;
+              found = true;
+            }
+          }
+        }
+        if (!found) break;
+      }
+      const output = document.getElementById('output');
+      const allFinished = finish.every(f => f);
+      output.innerHTML = allFinished
+        ? `<h2>Safe Sequence:</h2><p>${safeSequence.join(' → ')}</p>`
+        : `<h2 style="color: red">Deadlock Detected: No Safe Sequence</h2>`;
+    }
+  </script>
+</body>
+</html>

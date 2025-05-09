@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Non-Preemptive SJF Scheduling Simulator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #FFB75E, #ED8F03);
+      color: #fff;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      margin-bottom: 1rem;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 700px;
+      margin-top: 1rem;
+    }
+
+    table, th, td {
+      border: 1px solid #fff;
+    }
+
+    th, td {
+      padding: 0.5rem;
+      text-align: center;
+    }
+
+    input[type="number"] {
+      width: 100px;
+      padding: 0.3rem;
+    }
+
+    .controls {
+      margin-top: 1rem;
+    }
+
+    .output {
+      margin-top: 2rem;
+      background-color: rgba(255, 255, 255, 0.15);
+      padding: 1rem;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Non-Preemptive SJF Scheduling Simulator</h1>
+
+  <div>
+    <label>Enter Number of Processes: </label>
+    <input type="number" id="numProcess" min="1">
+    <button onclick="generateInputs()">Submit</button>
+  </div>
+
+  <form id="processForm" class="controls"></form>
+
+  <div class="controls">
+    <button onclick="simulateSJF()">Simulate SJF</button>
+  </div>
+
+  <div id="output" class="output"></div>
+
+  <script>
+    function generateInputs() {
+      const n = document.getElementById("numProcess").value;
+      const form = document.getElementById("processForm");
+      form.innerHTML = "";
+      for (let i = 0; i < n; i++) {
+        form.innerHTML += `
+          <div>
+            <label>Process P${i + 1} - Arrival Time: </label>
+            <input type="number" id="arrival${i}" required>
+            <label> Burst Time: </label>
+            <input type="number" id="burst${i}" required><br><br>
+          </div>
+        `;
+      }
+    }
+
+    function simulateSJF() {
+      const n = document.getElementById("numProcess").value;
+      let processes = [];
+
+      for (let i = 0; i < n; i++) {
+        const at = parseInt(document.getElementById(`arrival${i}`).value);
+        const bt = parseInt(document.getElementById(`burst${i}`).value);
+        processes.push({ id: i + 1, arrival: at, burst: bt });
+      }
+
+      let time = 0, completed = 0;
+      let result = "<h2>Scheduling Result</h2><table><tr><th>Process</th><th>Arrival</th><th>Burst</th><th>Start</th><th>Completion</th><th>Turnaround</th><th>Waiting</th></tr>";
+      let visited = new Array(n).fill(false);
+
+      while (completed < n) {
+        let idx = -1;
+        let minBT = Number.MAX_SAFE_INTEGER;
+
+        for (let i = 0; i < n; i++) {
+          if (processes[i].arrival <= time && !visited[i]) {
+            if (processes[i].burst < minBT || (processes[i].burst === minBT && processes[i].arrival < processes[idx]?.arrival)) {
+              minBT = processes[i].burst;
+              idx = i;
+            }
+          }
+        }
+
+        if (idx === -1) {
+          time++;
+          continue;
+        }
+
+        const p = processes[idx];
+        p.start = time;
+        p.completion = p.start + p.burst;
+        p.turnaround = p.completion - p.arrival;
+        p.waiting = p.start - p.arrival;
+
+        time = p.completion;
+        visited[idx] = true;
+        completed++;
+
+        result += `<tr><td>P${p.id}</td><td>${p.arrival}</td><td>${p.burst}</td><td>${p.start}</td><td>${p.completion}</td><td>${p.turnaround}</td><td>${p.waiting}</td></tr>`;
+      }
+
+      result += "</table>";
+      document.getElementById("output").innerHTML = result;
+    }
+  </script>
+</body>
+
+</html>

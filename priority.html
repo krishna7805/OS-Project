@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preemptive Priority Scheduling Simulator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #ff758c, #ff7eb3);
+      color: #fff;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    input, button {
+      padding: 0.5rem;
+      margin: 0.5rem;
+      border-radius: 5px;
+      border: none;
+    }
+
+    input[type="number"] {
+      width: 80px;
+    }
+
+    table {
+      margin: 2rem auto;
+      border-collapse: collapse;
+      width: 90%;
+      max-width: 800px;
+    }
+
+    th, td {
+      border: 1px solid #fff;
+      padding: 0.5rem;
+    }
+
+    .output {
+      margin-top: 2rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 1rem;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Preemptive Priority Scheduling Simulator</h1>
+
+  <div>
+    <label>Number of Processes:</label>
+    <input type="number" id="numProcess" min="1">
+    <button onclick="generateInputs()">Submit</button>
+  </div>
+
+  <form id="processForm"></form>
+
+  <button onclick="simulatePriority()">Simulate Priority Scheduling</button>
+
+  <div class="output" id="output"></div>
+
+  <script>
+    function generateInputs() {
+      const n = parseInt(document.getElementById("numProcess").value);
+      const form = document.getElementById("processForm");
+      form.innerHTML = "";
+      for (let i = 0; i < n; i++) {
+        form.innerHTML += `
+          <div>
+            <label>P${i + 1} Arrival:</label>
+            <input type="number" id="arrival${i}" required>
+            <label>Burst:</label>
+            <input type="number" id="burst${i}" required>
+            <label>Priority (Lower = Higher):</label>
+            <input type="number" id="priority${i}" required><br><br>
+          </div>
+        `;
+      }
+    }
+
+    function simulatePriority() {
+      const n = parseInt(document.getElementById("numProcess").value);
+      let processes = [];
+
+      for (let i = 0; i < n; i++) {
+        const arrival = parseInt(document.getElementById(`arrival${i}`).value);
+        const burst = parseInt(document.getElementById(`burst${i}`).value);
+        const priority = parseInt(document.getElementById(`priority${i}`).value);
+        processes.push({ id: i + 1, arrival, burst, priority, remaining: burst });
+      }
+
+      let time = 0, completed = 0;
+      let log = [];
+
+      while (completed < n) {
+        let idx = -1;
+        let minPriority = Infinity;
+
+        for (let i = 0; i < n; i++) {
+          if (processes[i].arrival <= time && processes[i].remaining > 0) {
+            if (processes[i].priority < minPriority ||
+                (processes[i].priority === minPriority && processes[i].arrival < processes[idx]?.arrival)) {
+              minPriority = processes[i].priority;
+              idx = i;
+            }
+          }
+        }
+
+        if (idx !== -1) {
+          if (!processes[idx].start) processes[idx].start = time;
+          processes[idx].remaining--;
+          log.push(`P${processes[idx].id} executes at t=${time}`);
+          time++;
+
+          if (processes[idx].remaining === 0) {
+            processes[idx].completion = time;
+            completed++;
+          }
+        } else {
+          log.push(`CPU idle at t=${time}`);
+          time++;
+        }
+      }
+
+      let result = `<h2>Execution Log</h2><p>${log.join("<br>")}</p>`;
+      result += `<h2>Process Summary</h2><table><tr><th>Process</th><th>Arrival</th><th>Burst</th><th>Priority</th><th>Completion</th><th>Turnaround</th><th>Waiting</th></tr>`;
+
+      for (let p of processes) {
+        p.turnaround = p.completion - p.arrival;
+        p.waiting = p.turnaround - p.burst;
+        result += `<tr><td>P${p.id}</td><td>${p.arrival}</td><td>${p.burst}</td><td>${p.priority}</td><td>${p.completion}</td><td>${p.turnaround}</td><td>${p.waiting}</td></tr>`;
+      }
+
+      result += `</table>`;
+      document.getElementById("output").innerHTML = result;
+    }
+  </script>
+</body>
+
+</html>

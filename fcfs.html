@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FCFS Scheduling Simulator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #43cea2, #185a9d);
+      color: #fff;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      margin-bottom: 1rem;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 600px;
+      margin-top: 1rem;
+    }
+
+    table, th, td {
+      border: 1px solid #fff;
+    }
+
+    th, td {
+      padding: 0.5rem;
+      text-align: center;
+    }
+
+    input[type="number"] {
+      width: 100px;
+      padding: 0.3rem;
+    }
+
+    .controls {
+      margin-top: 1rem;
+    }
+
+    .output {
+      margin-top: 2rem;
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 1rem;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>FCFS Scheduling Simulator</h1>
+
+  <div>
+    <label>Enter Number of Processes: </label>
+    <input type="number" id="numProcess" min="1">
+    <button onclick="generateInputs()">Submit</button>
+  </div>
+
+  <form id="processForm" class="controls"></form>
+
+  <div class="controls">
+    <button onclick="simulateFCFS()">Simulate FCFS</button>
+  </div>
+
+  <div id="output" class="output"></div>
+
+  <script>
+    function generateInputs() {
+      const n = document.getElementById("numProcess").value;
+      const form = document.getElementById("processForm");
+      form.innerHTML = "";
+      for (let i = 0; i < n; i++) {
+        form.innerHTML += `
+          <div>
+            <label>Process P${i + 1} - Arrival Time: </label>
+            <input type="number" id="arrival${i}" required>
+            <label> Burst Time: </label>
+            <input type="number" id="burst${i}" required><br><br>
+          </div>
+        `;
+      }
+    }
+
+    function simulateFCFS() {
+      const n = document.getElementById("numProcess").value;
+      let processes = [];
+
+      for (let i = 0; i < n; i++) {
+        const at = parseInt(document.getElementById(`arrival${i}`).value);
+        const bt = parseInt(document.getElementById(`burst${i}`).value);
+        processes.push({ id: i + 1, arrival: at, burst: bt });
+      }
+
+      processes.sort((a, b) => a.arrival - b.arrival);
+
+      let currentTime = 0;
+      let result = "<h2>Scheduling Result</h2><table><tr><th>Process</th><th>Arrival</th><th>Burst</th><th>Start</th><th>Completion</th><th>Turnaround</th><th>Waiting</th></tr>";
+
+      processes.forEach(p => {
+        p.start = Math.max(currentTime, p.arrival);
+        p.completion = p.start + p.burst;
+        p.turnaround = p.completion - p.arrival;
+        p.waiting = p.start - p.arrival;
+        currentTime = p.completion;
+
+        result += `<tr><td>P${p.id}</td><td>${p.arrival}</td><td>${p.burst}</td><td>${p.start}</td><td>${p.completion}</td><td>${p.turnaround}</td><td>${p.waiting}</td></tr>`;
+      });
+
+      result += "</table>";
+      document.getElementById("output").innerHTML = result;
+    }
+  </script>
+</body>
+
+</html>

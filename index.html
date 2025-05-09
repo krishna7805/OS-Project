@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OS Algorithm Simulator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      font-size: 1.2rem;
+      color: #f0e6ff;
+    }
+
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    .card-container a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .card {
+      background: #fff;
+      color: #333;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+    }
+
+    .card h3 {
+      font-size: 1.4rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .card p {
+      font-size: 0.95rem;
+      color: #666;
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>OS Algorithm Simulator</h1>
+    <p>Explore and simulate various operating system algorithms interactively</p>
+  </header>
+
+  <div class="card-container">
+      <a href="fcfs.html">
+    <div class="card">
+      <h3>FCFS Scheduling</h3>
+      <p>First Come First Serve process scheduling algorithm simulator.</p>
+    </div>
+    </a>
+    <a href="SJF.html">
+    <div class="card">
+      <h3>SJF Scheduling</h3>
+      <p>Shortest Job First scheduling with burst time prediction.</p>
+    </div>
+    </a>
+    <a href="RR.html">
+    <div class="card">
+      <h3>Round Robin</h3>
+      <p>Simulate time-sharing using the Round Robin scheduling method.</p>
+    </div>
+    </a>
+
+    <a href="priority.html">
+    <div class="card">
+      <h3>Priority Scheduling</h3>
+      <p>Preemptive and non-preemptive priority-based CPU scheduling.</p>
+    </div>
+    </a>
+
+    <a href="Bankers.html">
+    <div class="card">
+      <h3>Banker's Algorithm</h3>
+      <p>Resource allocation and deadlock avoidance simulation.</p>
+    </div>
+    </a>
+
+    
+
+    <div class="card">
+      <h3>Page Replacement</h3>
+      <p>Visualize LRU, FIFO, and Optimal page replacement techniques.</p>
+    </div>
+
+    <div class="card">
+      <h3>Disk Scheduling</h3>
+      <p>Simulate algorithms like FCFS, SCAN, and LOOK for disk I/O.</p>
+    </div>
+
+  </div>
+</body>
+
+</html>
