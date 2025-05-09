@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Best Fit Memory Allocation</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #8e2de2, #4a00e0);
+      color: white;
+      padding: 2rem;
+      text-align: center;
+    }
+    input, button {
+      padding: 0.5rem;
+      margin: 0.5rem;
+      border-radius: 5px;
+      border: none;
+    }
+    .output {
+      margin-top: 2rem;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 1rem;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Best Fit Memory Allocation Simulator</h1>
+
+  <label>Number of Memory Blocks:</label>
+  <input type="number" id="numBlocks" min="1">
+  <br>
+  <label>Enter Memory Block Sizes (comma-separated):</label>
+  <input type="text" id="blockSizes">
+  <br>
+  <label>Enter Process Sizes (comma-separated):</label>
+  <input type="text" id="processSizes">
+  <br>
+  <button onclick="simulateBestFit()">Simulate</button>
+
+  <div class="output" id="output"></div>
+
+  <script>
+    function simulateBestFit() {
+      const blockSizes = document.getElementById("blockSizes").value.split(',').map(Number);
+      const processSizes = document.getElementById("processSizes").value.split(',').map(Number);
+      const allocation = new Array(processSizes.length).fill(-1);
+
+      for (let i = 0; i < processSizes.length; i++) {
+        let bestIdx = -1;
+        for (let j = 0; j < blockSizes.length; j++) {
+          if (blockSizes[j] >= processSizes[i]) {
+            if (bestIdx === -1 || blockSizes[j] < blockSizes[bestIdx]) {
+              bestIdx = j;
+            }
+          }
+        }
+        if (bestIdx !== -1) {
+          allocation[i] = bestIdx;
+          blockSizes[bestIdx] -= processSizes[i];
+        }
+      }
+
+      let result = '<h2>Allocation Results</h2><table border="1" style="margin:auto;"><tr><th>Process No.</th><th>Process Size</th><th>Block Allocated</th></tr>';
+      for (let i = 0; i < processSizes.length; i++) {
+        result += `<tr><td>${i + 1}</td><td>${processSizes[i]}</td><td>${allocation[i] !== -1 ? allocation[i] + 1 : 'Not Allocated'}</td></tr>`;
+      }
+      result += '</table>';
+
+      document.getElementById("output").innerHTML = result;
+    }
+  </script>
+</body>
+</html>

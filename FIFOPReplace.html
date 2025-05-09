@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FIFO Page Replacement</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #ff5f6d, #ffc371);
+      color: #fff;
+      padding: 2rem;
+      text-align: center;
+    }
+    input, button {
+      padding: 0.5rem;
+      margin: 0.5rem;
+      border-radius: 5px;
+      border: none;
+    }
+    .output {
+      margin-top: 2rem;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 1rem;
+      border-radius: 10px;
+    }
+    table {
+      margin: 1rem auto;
+      border-collapse: collapse;
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    th, td {
+      padding: 0.5rem;
+      border: 1px solid #fff;
+    }
+  </style>
+</head>
+<body>
+  <h1>FIFO Page Replacement Simulator</h1>
+  <label>Enter Number of Frames:</label>
+  <input type="number" id="frames" min="1">
+  <br>
+  <label>Enter Page Reference String (comma-separated):</label>
+  <input type="text" id="referenceString">
+  <br>
+  <button onclick="simulateFIFO()">Simulate FIFO</button>
+
+  <div class="output" id="output"></div>
+
+  <script>
+    function simulateFIFO() {
+      const framesCount = parseInt(document.getElementById("frames").value);
+      const referenceString = document.getElementById("referenceString").value.split(',').map(Number);
+      let frames = [], pageFaults = 0, resultHTML = "";
+
+      resultHTML += `<h2>FIFO Execution</h2>`;
+      resultHTML += `<table><tr><th>Step</th><th>Page</th><th>Frames</th><th>Page Fault</th></tr>`;
+
+      for (let i = 0; i < referenceString.length; i++) {
+        const page = referenceString[i];
+        let pageFault = false;
+
+        if (!frames.includes(page)) {
+          pageFault = true;
+          if (frames.length < framesCount) {
+            frames.push(page);
+          } else {
+            frames.shift();
+            frames.push(page);
+          }
+          pageFaults++;
+        }
+
+        resultHTML += `<tr><td>${i + 1}</td><td>${page}</td><td>${frames.join(', ')}</td><td>${pageFault ? 'Yes' : 'No'}</td></tr>`;
+      }
+
+      resultHTML += `</table><h3>Total Page Faults: ${pageFaults}</h3>`;
+
+      document.getElementById("output").innerHTML = resultHTML;
+    }
+  </script>
+</body>
+</html>
