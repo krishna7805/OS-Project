@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SCAN Disk Scheduling with Graph</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #1f4037, #99f2c8);
+      color: white;
+      text-align: center;
+      padding: 2rem;
+    }
+    input, select, button {
+      padding: 0.5rem;
+      margin: 0.5rem;
+      border-radius: 5px;
+      border: none;
+    }
+    .output {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 1rem;
+      margin-top: 2rem;
+      border-radius: 10px;
+    }
+    canvas {
+      background-color: white;
+      border-radius: 10px;
+      margin-top: 1rem;
+      max-width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>SCAN Disk Scheduling Simulator</h1>
+
+  <label>Disk Queue (comma-separated):</label>
+  <input type="text" id="queue" placeholder="e.g., 82,170,43,140,24,16,190"><br>
+
+  <label>Head Position:</label>
+  <input type="number" id="head" placeholder="e.g., 50"><br>
+
+  <label>Disk Size:</label>
+  <input type="number" id="diskSize" placeholder="e.g., 200"><br>
+
+  <label>Direction:</label>
+  <select id="direction">
+    <option value="left">Left</option>
+    <option value="right">Right</option>
+  </select><br>
+
+  <button onclick="simulateSCAN()">Simulate SCAN</button>
+
+  <div class="output" id="output"></div>
+  <canvas id="chart" width="800" height="400"></canvas>
+
+  <script>
+    let chart;
+
+    function simulateSCAN() {
+      const queue = document.getElementById("queue").value.split(',').map(Number);
+      const head = parseInt(document.getElementById("head").value);
+      const diskSize = parseInt(document.getElementById("diskSize").value);
+      const direction = document.getElementById("direction").value;
+
+      queue.push(head);
+      queue.sort((a, b) => a - b);
+
+      const idx = queue.indexOf(head);
+      let seekSequence = [];
+
+      if (direction === "left") {
+        for (let i = idx; i >= 0; i--) seekSequence.push(queue[i]);
+        seekSequence.push(0);
+        for (let i = idx + 1; i < queue.length; i++) seekSequence.push(queue[i]);
+      } else {
+        for (let i = idx; i < queue.length; i++) seekSequence.push(queue[i]);
+        seekSequence.push(diskSize - 1);
+        for (let i = idx - 1; i >= 0; i--) seekSequence.push(queue[i]);
+      }
+
+      let totalSeek = 0;
+      for (let i = 1; i < seekSequence.length; i++) {
+        totalSeek += Math.abs(seekSequence[i] - seekSequence[i - 1]);
+      }
+
+      document.getElementById("output").innerHTML = `
+        <h2>SCAN Result</h2>
+        <p><strong>Seek Sequence:</strong> ${seekSequence.join(' → ')}</p>
+        <p><strong>Total Head Movement:</strong> ${totalSeek} tracks</p>
+      `;
+
+      drawChart(seekSequence);
+    }
+
+    function drawChart(sequence) {
+      const ctx = document.getElementById('chart').getContext('2d');
+
+      if (chart) chart.destroy();
+
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: sequence.map((_, i) => i),
+          datasets: [{
+            label: 'Head Position (Track Number)',
+            data: sequence,
+            borderColor: 'red',
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            fill: false,
+            tension: 0.1,
+            pointBackgroundColor: 'red',
+            pointRadius: 5
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: true },
+            tooltip: { mode: 'index', intersect: false }
+          },
+          scales: {
+            x: {
+              title: { display: true, text: 'Step' }
+            },
+            y: {
+              title: { display: true, text: 'Track Number' },
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>

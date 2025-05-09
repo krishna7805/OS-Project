@@ -24,14 +24,10 @@
       padding: 1rem;
       border-radius: 10px;
     }
-    table {
-      margin: auto;
-      border-collapse: collapse;
-      background-color: rgba(255,255,255,0.2);
-    }
-    th, td {
-      padding: 0.5rem;
-      border: 1px solid #fff;
+    canvas {
+      margin-top: 2rem;
+      background: #fff;
+      border-radius: 10px;
     }
   </style>
 </head>
@@ -47,8 +43,14 @@
   <button onclick="simulateFCFS()">Simulate</button>
 
   <div class="output" id="output"></div>
+  <canvas id="seekChart" width="600" height="400"></canvas>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <script>
+    let chart; // global variable to hold chart instance
+
     function simulateFCFS() {
       const head = parseInt(document.getElementById('head').value);
       const queue = document.getElementById('queue').value.split(',').map(Number);
@@ -63,8 +65,55 @@
       let result = `<h2>FCFS Execution</h2><p>Seek Sequence: ${seekSequence.join(' → ')}</p>`;
       result += `<p>Total Seek Time: ${totalSeekTime}</p>`;
       result += `<p>Average Seek Time: ${(totalSeekTime / queue.length).toFixed(2)}</p>`;
-
       document.getElementById('output').innerHTML = result;
+
+      // Create labels for chart (Step 0, 1, 2,...)
+      const labels = seekSequence.map((_, index) => `Step ${index}`);
+
+      // Destroy previous chart instance if it exists
+      if (chart) chart.destroy();
+
+      // Create new chart
+      const ctx = document.getElementById('seekChart').getContext('2d');
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Disk Head Movement',
+            data: seekSequence,
+            borderColor: '#4bc0c0',
+            backgroundColor: 'rgba(75,192,192,0.2)',
+            tension: 0.2,
+            fill: true,
+            pointBackgroundColor: '#fff',
+            pointBorderColor: '#4bc0c0'
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              title: {
+                display: true,
+                text: 'Cylinder Number'
+              }
+            },
+            x: {
+              title: {
+                display: true,
+                text: 'Operation Step'
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              labels: {
+                color: '#fff'
+              }
+            }
+          }
+        }
+      });
     }
   </script>
 </body>

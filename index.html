@@ -1,201 +1,444 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OS Algorithm Simulator</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="os-algorithm-simulator.css">
+
+
   <style>
     * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
 
-    body {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: #fff;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(to bottom right, #6d28d9, #4338ca, #6d28d9);
+  color: #ffffff;
+  min-height: 100vh;
+  padding-bottom: 4rem;
+}
 
-    header {
-      padding: 2rem 1rem;
-      text-align: center;
-    }
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Poppins', sans-serif;
+}
 
-    header h1 {
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
-    }
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
 
-    header p {
-      font-size: 1.2rem;
-      color: #f0e6ff;
-    }
-    h1{
-        font-size: 2rem;
-        margin: 2rem 0;
-        align-items: center;
-    }
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
 
-    .card-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
-      padding: 2rem;
-      width: 100%;
-      max-width: 1200px;
-    }
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+}
 
-    .card-container a {
-      text-decoration: none;
-      color: inherit;
-    }
+::-webkit-scrollbar-thumb:hover {
+  background: #6d28d9;
+}
 
-    .card {
-      background: #fff;
-      color: #333;
-      border-radius: 1rem;
-      padding: 1.5rem;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-      transition: transform 0.2s ease-in-out;
-    }
+/* Focus styles for accessibility */
+:focus-visible {
+  outline: 2px solid #6d28d9;
+  outline-offset: 2px;
+}
 
-    .card:hover {
-      transform: translateY(-10px);
-    }
+/* Hero section styles */
+.hero {
+  padding: 3rem 1rem;
+  text-align: center;
+  max-width: 1280px;
+  margin: 0 auto;
+}
 
-    .card h3 {
-      font-size: 1.4rem;
-      margin-bottom: 0.5rem;
-    }
+.hero-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
 
-    .card p {
-      font-size: 0.95rem;
-      color: #666;
-    }
+.hero-description {
+  font-size: 1.25rem;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 48rem;
+  margin: 0 auto;
+}
 
-    @media (max-width: 600px) {
-      header h1 {
-        font-size: 2rem;
-      }
-    }
-    @media (max-width: 768px) {
-      header {
-        padding: 1rem 0.5rem;
-      }
-      header h1 {
-        font-size: 2rem;
-      }
-      header p {
-        font-size: 1rem;
-      }
-      h1 {
-        font-size: 1.5rem;
-        margin: 1rem 0;
-      }
-      .card-container {
-        grid-template-columns: 1fr;
-        padding: 1rem;
-        gap: 1rem;
-      }
-    }
+/* Container for algorithm categories */
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
 
-    @media (max-width: 480px) {
-      header h1 {
-        font-size: 1.3rem;
-      }
-      .card-container {
-        padding: 0.5rem;
-      }
-    }
+/* Category styles */
+.category {
+  margin-bottom: 3rem;
+}
+
+.category-title {
+  font-size: 1.75rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+}
+
+/* Card grid */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Card link */
+.card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  height: 100%;
+}
+
+/* Card styles */
+.card {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  height: 100%;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+  padding: 1.5rem 1.5rem 0.5rem;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  color: #333333;
+  font-weight: 600;
+}
+
+.card-content {
+  padding: 0 1.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.card-description {
+  color: #666666;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  flex-grow: 1;
+}
+
+.card-action {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  color: #6d28d9;
+  font-weight: 500;
+}
+
+.try-it {
+  margin-right: 0.25rem;
+}
+
+.arrow-right {
+  font-size: 1.25rem;
+}
+
+/* Animations */
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hover-scale {
+  transition: transform 0.3s ease;
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .card-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .hero-description {
+    font-size: 1.125rem;
+  }
+  
+  .category-title {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding: 2rem 1rem;
+  }
+  
+  .hero-title {
+    font-size: 1.75rem;
+  }
+  
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .category {
+    margin-bottom: 2rem;
+  }
+  
+  .category-title {
+    margin-bottom: 1rem;
+  }
+}
+
+/* Fix for multiple stacked categories */
+.category + .category {
+  margin-top: 2rem;
+}
   </style>
 </head>
 
 <body>
-  <header>
-    <h1>OS Algorithm Simulator</h1>
-    <p>Explore and simulate various operating system algorithms interactively</p>
+  <!-- Hero Section -->
+  <header class="hero">
+    <h1 class="hero-title animate-fade-in">OS Algorithm Simulator</h1>
+    <p class="hero-description animate-fade-in">Explore and simulate various operating system algorithms interactively</p>
   </header>
-<div class="container">
-  <h1>Scheduling Algorithm</h1>
-  <div class="card-container">
-      <a href="fcfs.html">
-    <div class="card">
-      <h3>FCFS Scheduling</h3>
-      <p>First Come First Serve process scheduling algorithm simulator.</p>
-    </div>
-    </a>
-    <a href="SJF.html">
-    <div class="card">
-      <h3>SJF Scheduling</h3>
-      <p>Shortest Job First scheduling with burst time prediction.</p>
-    </div>
-    </a>
-    <a href="RR.html">
-    <div class="card">
-      <h3>Round Robin</h3>
-      <p>Simulate time-sharing using the Round Robin scheduling method.</p>
-    </div>
-    </a>
 
-    <a href="priority.html">
-    <div class="card">
-      <h3>Priority Scheduling</h3>
-      <p>Preemptive and non-preemptive priority-based CPU scheduling.</p>
+  <!-- Algorithm Categories -->
+  <div class="container">
+    <!-- Scheduling Algorithms -->
+    <div class="category animate-fade-in">
+      <h2 class="category-title">Scheduling Algorithms</h2>
+      <div class="card-grid">
+        <a href="fcfs.html" class="card-link hover-scale">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">FCFS Scheduling</h3>
+            </div>
+            <div class="card-content">
+              <p class="card-description">
+                First Come First Serve process scheduling algorithm simulator.
+              </p>
+              <div class="card-action">
+                <span class="try-it">Try it</span>
+                <span class="arrow-right">→</span>
+              </div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="SJF.html" class="card-link hover-scale">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">SJF Scheduling</h3>
+            </div>
+            <div class="card-content">
+              <p class="card-description">
+                Shortest Job First scheduling with burst time prediction.
+              </p>
+              <div class="card-action">
+                <span class="try-it">Try it</span>
+                <span class="arrow-right">→</span>
+              </div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="RR.html" class="card-link hover-scale">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Round Robin</h3>
+            </div>
+            <div class="card-content">
+              <p class="card-description">
+                Simulate time-sharing using the Round Robin scheduling method.
+              </p>
+              <div class="card-action">
+                <span class="try-it">Try it</span>
+                <span class="arrow-right">→</span>
+              </div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="priority.html" class="card-link hover-scale">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Priority Scheduling</h3>
+            </div>
+            <div class="card-content">
+              <p class="card-description">
+                Preemptive and non-preemptive priority-based CPU scheduling.
+              </p>
+              <div class="card-action">
+                <span class="try-it">Try it</span>
+                <span class="arrow-right">→</span>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
     </div>
-    </a>
-    </div>
-    </div>
-    <div class="card-container">
-      
-    <a href="Bankers.html">
-    <div class="card">
-      <h3>Banker's Algorithm</h3>
-      <p>Resource allocation and deadlock avoidance simulation.</p>
-    </div>
-    </a>
-    <a href="BestFit.html">
-        <div class="card">
-            <h3>Best Fit Memory Allocation</h3>
-            <p>Simulate memory allocation using the Best Fit algorithm.</p>
-        </div>
-    
-    </a>
-</div>
 
-<div class="container">
-    <h1>Page Replacement Algorithm</h1>
-    <div class="card-container">
-        <a href="FIFOPReplace.html">
-        <div class="card">
-            <h3>First in First out</h3>
-            <p>Simulate FIFO page replacement algorithm for memory management.</p>
-        </div>
+    <!-- Resource Management -->
+    <div class="category animate-fade-in">
+      <h2 class="category-title">Resource Management</h2>
+      <div class="card-grid">
+        <a href="Bankers.html" class="card-link hover-scale">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Banker's Algorithm</h3>
+            </div>
+            <div class="card-content">
+              <p class="card-description">
+                Resource allocation and deadlock avoidance simulation.
+              </p>
+              <div class="card-action">
+                <span class="try-it">Try it</span>
+                <span class="arrow-right">→</span>
+              </div>
+            </div>
+          </div>
+        </a>
+        
+        <a href="BestFit.html" class="card-link hover-scale">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Best Fit Memory Allocation</h3>
+            </div>
+            <div class="card-content">
+              <p class="card-description">
+                Simulate memory allocation using the Best Fit algorithm.
+              </p>
+              <div class="card-action">
+                <span class="try-it">Try it</span>
+                <span class="arrow-right">→</span>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Page Replacement Algorithm -->
+    <div class="category animate-fade-in">
+      <h2 class="category-title">Page Replacement Algorithm</h2>
+      <div class="card-grid">
+        <a href="FIFOPReplace.html" class="card-link hover-scale">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">First in First Out</h3>
+            </div>
+            <div class="card-content">
+              <p class="card-description">
+                Simulate FIFO page replacement algorithm for memory management.
+              </p>
+              <div class="card-action">
+                <span class="try-it">Try it</span>
+                <span class="arrow-right">→</span>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Disk Scheduling -->
+    <div class="category animate-fade-in">
+      <h2 class="category-title">Disk Scheduling</h2>
+      <div class="card-grid">
+        <a href="FCFSDS.html" class="card-link hover-scale">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">First Come First Serve</h3>
+            </div>
+            <div class="card-content">
+              <p class="card-description">
+                Simulate First Come First Serve Disk Scheduling.
+              </p>
+              <div class="card-action">
+                <span class="try-it">Try it</span>
+                <span class="arrow-right">→</span>
+              </div>
+            </div>
+          </div>
         </a>
 
-    
-    </div>
-</div>
-<div class="container">
-    <div class="card-container">
-        <a href="FCFSDS.html">
-            <div class="card">
-                <h3>First Come First Serve</h3>
-                <p>Simulate First Come First Serve Disk Scheduling.</p>
+        <a href="Scan.html" class="card-link hover-scale">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Scan Disk Scheduling Algorithm</h3>
+            </div>
+            <div class="card-content">
+              <p class="card-description">
+                Simulate Scan Disk Scheduling.
+              </p>
+              <div class="card-action">
+                <span class="try-it">Try it</span>
+                <span class="arrow-right">→</span>
               </div>
-        </a>    </div>
-</div>
+            </div>
+          </div>
+        </a>
+        <a href="C-Scan.html" class="card-link hover-scale">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">C-Scan Disk Scheduling Algorithm</h3>
+            </div>
+            <div class="card-content">
+              <p class="card-description">
+                Simulate C-Scan Disk Scheduling.
+              </p>
+              <div class="card-action">
+                <span class="try-it">Try it</span>
+                <span class="arrow-right">→</span>
+              </div>
+            </div>
+          </div>
+        </a>
 
-         
-         </div>
 
+      </div>
+    </div>
   </div>
 </body>
-
 </html>

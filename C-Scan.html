@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>C-SCAN Disk Scheduling</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #8e2de2, #4a00e0);
+      color: white;
+      padding: 2rem;
+      text-align: center;
+    }
+    input, button {
+      padding: 0.5rem;
+      margin: 0.5rem;
+      border-radius: 5px;
+      border: none;
+    }
+    .output {
+      margin-top: 2rem;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 1rem;
+      border-radius: 10px;
+    }
+    canvas {
+      background: white;
+      border-radius: 10px;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>C-SCAN Disk Scheduling Simulator</h1>
+
+  <label>Initial Head Position:</label>
+  <input type="number" id="head" />
+  <br>
+  <label>Request Queue (comma-separated):</label>
+  <input type="text" id="queue" />
+  <br>
+  <label>Disk Size (Max Track):</label>
+  <input type="number" id="diskSize" />
+  <br>
+  <button onclick="simulateCScan()">Simulate C-SCAN</button>
+
+  <div id="output" class="output"></div>
+  <canvas id="chart" width="800" height="400"></canvas>
+
+  <script>
+    let chart;
+
+    function simulateCScan() {
+      let head = parseInt(document.getElementById("head").value);
+      let requests = document.getElementById("queue").value.split(",").map(Number);
+      let diskSize = parseInt(document.getElementById("diskSize").value);
+
+      requests.push(head);
+      requests.sort((a, b) => a - b);
+
+      let headIndex = requests.indexOf(head);
+      let right = requests.slice(headIndex + 1);
+      let left = requests.slice(0, headIndex);
+
+      let sequence = [head, ...right, diskSize - 1, 0, ...left];
+      let seekSequence = [];
+      let totalSeek = 0;
+
+      for (let i = 1; i < sequence.length; i++) {
+        totalSeek += Math.abs(sequence[i] - sequence[i - 1]);
+        seekSequence.push({
+          position: sequence[i],
+          from: sequence[i - 1]
+        });
+      }
+
+      let outputHTML = `<h2>C-SCAN Result</h2><p>Seek Sequence: ${sequence.join(" ➜ ")}</p><p>Total Seek Time: ${totalSeek}</p>`;
+      document.getElementById("output").innerHTML = outputHTML;
+
+      drawChart(sequence);
+    }
+
+    function drawChart(sequence) {
+      const ctx = document.getElementById("chart").getContext("2d");
+      if (chart) chart.destroy();
+
+      chart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: sequence.map((_, i) => `Step ${i}`),
+          datasets: [{
+            label: "Disk Head Movement",
+            data: sequence,
+            fill: false,
+            borderColor: "orange",
+            tension: 0.2,
+            pointBackgroundColor: "red",
+            pointRadius: 5
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              callbacks: {
+                label: (context) => `Track: ${context.parsed.y}`
+              }
+            }
+          },
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: "Steps"
+              }
+            },
+            y: {
+              title: {
+                display: true,
+                text: "Track Number"
+              },
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>
