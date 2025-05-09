@@ -37,6 +37,11 @@
       font-size: 1.2rem;
       color: #f0e6ff;
     }
+    h1{
+        font-size: 2rem;
+        margin: 2rem 0;
+        align-items: center;
+    }
 
     .card-container {
       display: grid;
@@ -78,6 +83,35 @@
     @media (max-width: 600px) {
       header h1 {
         font-size: 2rem;
+      }
+    }
+    @media (max-width: 768px) {
+      header {
+        padding: 1rem 0.5rem;
+      }
+      header h1 {
+        font-size: 2rem;
+      }
+      header p {
+        font-size: 1rem;
+      }
+      h1 {
+        font-size: 1.5rem;
+        margin: 1rem 0;
+      }
+      .card-container {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+        gap: 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 1.3rem;
+      }
+      .card-container {
+        padding: 0.5rem;
       }
     }
   </style>
