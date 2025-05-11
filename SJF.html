@@ -1,142 +1,507 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Non-Preemptive SJF Scheduling Simulator</title>
   <style>
-    body {
+    /* Global Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #FFB75E, #ED8F03);
-      color: #fff;
-      padding: 2rem;
+    }
+    
+    body {
+      min-height: 100vh;
+      background: linear-gradient(to bottom right, #FFB75E, #ED8F03);
+      color: white;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    header {
       display: flex;
-      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    
+    h1 {
+      font-size: 2rem;
+      text-align: center;
+      flex-grow: 1;
+    }
+    
+    .back-button {
+      background-color: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    .back-button:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+    
+    .card {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      backdrop-filter: blur(10px);
+    }
+    
+    .card-title {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+    }
+    
+    .input-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 15px;
       align-items: center;
     }
-
-    h1 {
-      margin-bottom: 1rem;
+    
+    label {
+      font-size: 1rem;
+      white-space: nowrap;
     }
-
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      max-width: 700px;
-      margin-top: 1rem;
-    }
-
-    table, th, td {
-      border: 1px solid #fff;
-    }
-
-    th, td {
-      padding: 0.5rem;
-      text-align: center;
-    }
-
+    
     input[type="number"] {
-      width: 100px;
-      padding: 0.3rem;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      max-width: 120px;
     }
-
-    .controls {
-      margin-top: 1rem;
+    
+    button {
+      background-color: #FF9800;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
     }
-
-    .output {
-      margin-top: 2rem;
-      background-color: rgba(255, 255, 255, 0.15);
-      padding: 1rem;
-      border-radius: 10px;
+    
+    button:hover {
+      background-color: #F57C00;
+    }
+    
+    .button-center {
+      display: flex;
+      justify-content: center;
+      margin-top: 15px;
+    }
+    
+    /* Table Styles */
+    .table-container {
+      overflow-x: auto;
+      margin-bottom: 20px;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    th {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Process Form */
+    .process-form {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .process-item {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 15px;
+      border-radius: 6px;
+    }
+    
+    .process-item label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    
+    /* Gantt Chart */
+    .gantt-chart {
+      margin-top: 20px;
+      position: relative;
+      height: 80px;
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+    
+    .gantt-process {
+      position: absolute;
+      height: 50px;
+      top: 15px;
+      border-radius: 4px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-weight: bold;
+    }
+    
+    .gantt-timeline {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 10px;
+      margin-top: 5px;
+    }
+    
+    /* Performance Metrics */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    
+    .metric-item {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 15px;
+      border-radius: 6px;
+    }
+    
+    .metric-title {
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+    
+    .metric-value {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+      
+      .card-title {
+        font-size: 1.2rem;
+      }
+      
+      .input-group {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      input[type="number"] {
+        max-width: 100%;
+        width: 100%;
+      }
     }
   </style>
 </head>
 
 <body>
-  <h1>Non-Preemptive SJF Scheduling Simulator</h1>
+  <div class="container">
+    <header>
+      <button id="backButton" class="back-button">←</button>
+      <h1>Non-Preemptive SJF Scheduling Simulator</h1>
+      <div style="width: 40px;"></div> <!-- For layout balance -->
+    </header>
 
-  <div>
-    <label>Enter Number of Processes: </label>
-    <input type="number" id="numProcess" min="1">
-    <button onclick="generateInputs()">Submit</button>
+    <div id="configSection">
+      <div class="card">
+        <h2 class="card-title">Process Configuration</h2>
+        <div class="input-group">
+          <label for="numProcess">Number of Processes:</label>
+          <input type="number" id="numProcess" min="1" value="">
+        </div>
+        <div class="button-center">
+          <button id="generateButton">Generate Inputs</button>
+        </div>
+        
+        <div id="processForm" class="process-form"></div>
+        
+        <div class="button-center" id="simulateButtonContainer" style="display: none;">
+          <button id="simulateButton">Simulate SJF</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="resultsSection" style="display: none;">
+      <div class="card">
+        <h2 class="card-title">Scheduling Results</h2>
+        <div class="table-container">
+          <table id="resultsTable">
+            <thead>
+              <tr>
+                <th>Process</th>
+                <th>Arrival</th>
+                <th>Burst</th>
+                <th>Start</th>
+                <th>Completion</th>
+                <th>Turnaround</th>
+                <th>Waiting</th>
+              </tr>
+            </thead>
+            <tbody id="resultsBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">Gantt Chart</h2>
+        <div id="ganttChart" class="gantt-chart"></div>
+        <div id="ganttTimeline" class="gantt-timeline"></div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">Performance Metrics</h2>
+        <div class="metrics-grid">
+          <div class="metric-item">
+            <div class="metric-title">Average Turnaround Time</div>
+            <div id="avgTurnaround" class="metric-value">0.00 units</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-title">Average Waiting Time</div>
+            <div id="avgWaiting" class="metric-value">0.00 units</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="button-center">
+        <button id="resetButton">Create New Simulation</button>
+      </div>
+    </div>
   </div>
-
-  <form id="processForm" class="controls"></form>
-
-  <div class="controls">
-    <button onclick="simulateSJF()">Simulate SJF</button>
-  </div>
-
-  <div id="output" class="output"></div>
 
   <script>
-    function generateInputs() {
-      const n = document.getElementById("numProcess").value;
-      const form = document.getElementById("processForm");
-      form.innerHTML = "";
-      for (let i = 0; i < n; i++) {
-        form.innerHTML += `
-          <div>
-            <label>Process P${i + 1} - Arrival Time: </label>
-            <input type="number" id="arrival${i}" required>
-            <label> Burst Time: </label>
-            <input type="number" id="burst${i}" required><br><br>
-          </div>
-        `;
+    document.addEventListener('DOMContentLoaded', function() {
+      // DOM Elements
+      const backButton = document.getElementById('backButton');
+      const numProcessInput = document.getElementById('numProcess');
+      const generateButton = document.getElementById('generateButton');
+      const processForm = document.getElementById('processForm');
+      const simulateButtonContainer = document.getElementById('simulateButtonContainer');
+      const simulateButton = document.getElementById('simulateButton');
+      const resetButton = document.getElementById('resetButton');
+      const configSection = document.getElementById('configSection');
+      const resultsSection = document.getElementById('resultsSection');
+      const resultsBody = document.getElementById('resultsBody');
+      const ganttChart = document.getElementById('ganttChart');
+      const ganttTimeline = document.getElementById('ganttTimeline');
+      const avgTurnaround = document.getElementById('avgTurnaround');
+      const avgWaiting = document.getElementById('avgWaiting');
+
+      // Event Listeners
+      backButton.addEventListener('click', () => {
+  window.location.href = 'index.html#algorithms';
+});
+
+      generateButton.addEventListener('click', generateInputs);
+      simulateButton.addEventListener('click', simulateSJF);
+      resetButton.addEventListener('click', resetSimulation);
+
+      // Functions
+      function generateInputs() {
+        const n = parseInt(numProcessInput.value);
+        if (isNaN(n) || n <= 0) {
+          alert('Please enter a valid number of processes');
+          return;
+        }
+
+        processForm.innerHTML = '';
+        for (let i = 0; i < n; i++) {
+          const processItem = document.createElement('div');
+          processItem.className = 'process-item';
+          processItem.innerHTML = `
+            <label>Process P${i + 1}</label>
+            <div class="input-group">
+              <label>Arrival Time:</label>
+              <input type="number" id="arrival${i}" min="0" value="0">
+            </div>
+            <div class="input-group">
+              <label>Burst Time:</label>
+              <input type="number" id="burst${i}" min="1" value="1">
+            </div>
+          `;
+          processForm.appendChild(processItem);
+        }
+        
+        simulateButtonContainer.style.display = 'flex';
       }
-    }
 
-    function simulateSJF() {
-      const n = document.getElementById("numProcess").value;
-      let processes = [];
+      function simulateSJF() {
+        const n = parseInt(numProcessInput.value);
+        if (isNaN(n) || n <= 0) {
+          alert('Please enter a valid number of processes');
+          return;
+        }
 
-      for (let i = 0; i < n; i++) {
-        const at = parseInt(document.getElementById(`arrival${i}`).value);
-        const bt = parseInt(document.getElementById(`burst${i}`).value);
-        processes.push({ id: i + 1, arrival: at, burst: bt });
-      }
-
-      let time = 0, completed = 0;
-      let result = "<h2>Scheduling Result</h2><table><tr><th>Process</th><th>Arrival</th><th>Burst</th><th>Start</th><th>Completion</th><th>Turnaround</th><th>Waiting</th></tr>";
-      let visited = new Array(n).fill(false);
-
-      while (completed < n) {
-        let idx = -1;
-        let minBT = Number.MAX_SAFE_INTEGER;
+        let processes = [];
+        let validProcesses = true;
 
         for (let i = 0; i < n; i++) {
-          if (processes[i].arrival <= time && !visited[i]) {
-            if (processes[i].burst < minBT || (processes[i].burst === minBT && processes[i].arrival < processes[idx]?.arrival)) {
-              minBT = processes[i].burst;
-              idx = i;
+          const arrivalInput = document.getElementById(`arrival${i}`);
+          const burstInput = document.getElementById(`burst${i}`);
+          
+          const at = parseInt(arrivalInput.value);
+          const bt = parseInt(burstInput.value);
+          
+          if (isNaN(at) || isNaN(bt) || bt <= 0) {
+            alert(`Please enter valid values for Process P${i+1}`);
+            validProcesses = false;
+            break;
+          }
+          
+          processes.push({ id: i + 1, arrival: at, burst: bt });
+        }
+
+        if (!validProcesses) return;
+
+        // SJF Scheduling Logic
+        let time = 0, completed = 0;
+        let totalTurnaround = 0;
+        let totalWaiting = 0;
+        let visited = new Array(n).fill(false);
+        let results = [];
+
+        while (completed < n) {
+          let idx = -1;
+          let minBT = Number.MAX_SAFE_INTEGER;
+
+          for (let i = 0; i < n; i++) {
+            if (processes[i].arrival <= time && !visited[i]) {
+              if (processes[i].burst < minBT || (processes[i].burst === minBT && processes[i].arrival < processes[idx]?.arrival)) {
+                minBT = processes[i].burst;
+                idx = i;
+              }
             }
           }
+
+          if (idx === -1) {
+            time++;
+            continue;
+          }
+
+          const p = processes[idx];
+          p.start = time;
+          p.completion = p.start + p.burst;
+          p.turnaround = p.completion - p.arrival;
+          p.waiting = p.start - p.arrival;
+
+          totalTurnaround += p.turnaround;
+          totalWaiting += p.waiting;
+
+          time = p.completion;
+          visited[idx] = true;
+          completed++;
+          
+          results.push({...p});
         }
 
-        if (idx === -1) {
-          time++;
-          continue;
-        }
-
-        const p = processes[idx];
-        p.start = time;
-        p.completion = p.start + p.burst;
-        p.turnaround = p.completion - p.arrival;
-        p.waiting = p.start - p.arrival;
-
-        time = p.completion;
-        visited[idx] = true;
-        completed++;
-
-        result += `<tr><td>P${p.id}</td><td>${p.arrival}</td><td>${p.burst}</td><td>${p.start}</td><td>${p.completion}</td><td>${p.turnaround}</td><td>${p.waiting}</td></tr>`;
+        // Show results
+        configSection.style.display = 'none';
+        resultsSection.style.display = 'block';
+        
+        // Update table
+        resultsBody.innerHTML = '';
+        results.forEach(p => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>P${p.id}</td>
+            <td>${p.arrival}</td>
+            <td>${p.burst}</td>
+            <td>${p.start}</td>
+            <td>${p.completion}</td>
+            <td>${p.turnaround}</td>
+            <td>${p.waiting}</td>
+          `;
+          resultsBody.appendChild(row);
+        });
+        
+        // Update metrics
+        const avgTurnValue = totalTurnaround / n;
+        const avgWaitValue = totalWaiting / n;
+        
+        avgTurnaround.textContent = avgTurnValue.toFixed(2) + ' units';
+        avgWaiting.textContent = avgWaitValue.toFixed(2) + ' units';
+        
+        // Create Gantt chart
+        createGanttChart(results);
       }
 
-      result += "</table>";
-      document.getElementById("output").innerHTML = result;
-    }
+      function createGanttChart(processes) {
+        ganttChart.innerHTML = '';
+        ganttTimeline.innerHTML = '';
+        
+        if (processes.length === 0) return;
+
+        // Sort processes by start time to ensure correct ordering in the Gantt chart
+        processes.sort((a, b) => a.start - b.start);
+        
+        const lastProcess = processes[processes.length - 1];
+        const totalTime = lastProcess.completion;
+        
+        // Colors for the Gantt chart
+        const colors = [
+          '#FF9800', '#F57C00', '#FF5722', '#E64A19', '#D84315',
+          '#BF360C', '#FF7043', '#FF8A65', '#FFAB91', '#FFCCBC'
+        ];
+        
+        // Create processes in Gantt chart
+        processes.forEach((p, index) => {
+          const block = document.createElement('div');
+          block.className = 'gantt-process';
+          block.style.left = (p.start / totalTime * 100) + '%';
+          block.style.width = (p.burst / totalTime * 100) + '%';
+          block.style.backgroundColor = colors[index % colors.length];
+          block.textContent = 'P' + p.id;
+          ganttChart.appendChild(block);
+        });
+        
+        // Create timeline markers
+        const markers = 5; // Number of time markers to show
+        for (let i = 0; i <= markers; i++) {
+          const time = Math.round((totalTime / markers) * i);
+          const marker = document.createElement('span');
+          marker.textContent = time;
+          ganttTimeline.appendChild(marker);
+        }
+      }
+
+      function resetSimulation() {
+        configSection.style.display = 'block';
+        resultsSection.style.display = 'none';
+        processForm.innerHTML = '';
+        simulateButtonContainer.style.display = 'none';
+        numProcessInput.value = '';
+      }
+    });
   </script>
 </body>
-
 </html>

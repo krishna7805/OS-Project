@@ -1,142 +1,1001 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Banker's Algorithm Simulator</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to right, #43cea2, #185a9d);
-      color: white;
-      text-align: center;
-      padding: 2rem;
-    }
-    input, button {
-      padding: 0.5rem;
-      margin: 0.5rem;
-      border-radius: 5px;
-      border: none;
-      max-width: 100%;
-    }
-    table {
-      margin: 1rem auto;
-      border-collapse: collapse;
-      width: 90%;
-    }
-    th, td {
-      border: 1px solid #fff;
-      padding: 0.5rem;
-    }
-    .output {
-      background: rgba(255,255,255,0.1);
-      padding: 1rem;
-      border-radius: 10px;
-      margin-top: 2rem;
-    }
-    form {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-    @media screen and (max-width: 768px) {
-      input {
-        width: 60px;
-      }
-      form {
-        flex-direction: column;
-        overflow-x: auto;
-      }
-    }
-  </style>
-</head>
-<body>
-  <h1>Banker's Algorithm Simulator</h1>
-  <label>Processes:</label>
-  <input type="number" id="n" min="1" />
-  <label>Resources:</label>
-  <input type="number" id="m" min="1" />
-  <button onclick="generateInputFields()">Generate Matrices</button>
-  <form id="matrixForm"></form>
-  <button onclick="runBankersAlgorithm()">Run Banker's Algorithm</button>
-  <div class="output" id="output"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Banker's Algorithm Visualizer Pro</title>
+    <meta name="description" content="A premium web application for simulating and visualizing the Banker's Algorithm for deadlock avoidance." />
+    <meta name="author" content="Lovable" />
 
-  <script>
-    function generateInputFields() {
-      const n = parseInt(document.getElementById('n').value);
-      const m = parseInt(document.getElementById('m').value);
-      const form = document.getElementById('matrixForm');
-      form.innerHTML = '';
-      form.innerHTML += '<h3>Allocation Matrix</h3>';
-      for (let i = 0; i < n; i++) {
-        for (let j = 0; j < m; j++) {
-          form.innerHTML += `<input type="number" id="alloc${i}${j}" value="0">`;
-        }
-        form.innerHTML += '<br>';
-      }
-      form.innerHTML += '<h3>Maximum Matrix</h3>';
-      for (let i = 0; i < n; i++) {
-        for (let j = 0; j < m; j++) {
-          form.innerHTML += `<input type="number" id="max${i}${j}" value="0">`;
-        }
-        form.innerHTML += '<br>';
-      }
-      form.innerHTML += '<h3>Available Resources</h3>';
-      for (let j = 0; j < m; j++) {
-        form.innerHTML += `<input type="number" id="avail${j}" value="0">`;
-      }
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <meta property="og:title" content="Banker's Algorithm Visualizer Pro" />
+    <meta property="og:description" content="A premium web application for simulating and visualizing the Banker's Algorithm for deadlock avoidance." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@lovable_dev" />
+    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    
+    <link rel="stylesheet" href="styles.css">
+    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
+    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+    <style>
+      
+/* Base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+:root {
+  --background-from: #0f172a;
+  --background-via: #1e293b;
+  --background-to: #0f172a;
+  --text-primary: #ffffff;
+  --text-secondary: #cbd5e1;
+  --primary: #06b6d4;
+  --secondary: #14b8a6;
+  --accent: #f59e0b;
+  --border: #334155;
+  --card-bg: rgba(30, 41, 59, 0.6);
+  --btn-primary: #06b6d4;
+  --btn-primary-hover: #0891b2;
+  --btn-secondary: #475569;
+  --btn-secondary-hover: #334155;
+  --btn-outline: transparent;
+  --btn-outline-hover: #1e293b;
+  --safe: #10b981;
+  --unsafe: #ef4444;
+}
+
+body {
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+.min-h-screen {
+  min-height: 100vh;
+}
+
+.bg-gradient {
+  background: linear-gradient(to bottom right, var(--background-from), var(--background-via), var(--background-to));
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* Header styles */
+.header {
+  margin-bottom: 2rem;
+}
+
+.header-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  background: linear-gradient(to right, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  max-width: 48rem;
+}
+
+.pro-badge span {
+  padding: 0.25rem 0.75rem;
+  /* background-color: rgba(245, 158, 11, 0.1); */
+  color: var(--accent);
+  font-size: 0.75rem;
+  border-radius: 9999px;
+  /* border: 1px solid rgba(245, 158, 11, 0.2); */
+}
+
+/* Button styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.btn-primary {
+  background-color: var(--btn-primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--btn-primary-hover);
+}
+
+.btn-secondary {
+  background-color: var(--btn-secondary);
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: var(--btn-secondary-hover);
+}
+
+.btn-outline {
+  background-color: var(--btn-outline);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+
+.btn-outline:hover {
+  background-color: var(--btn-outline-hover);
+  color: var(--text-primary);
+}
+
+/* Tabs styles */
+.tabs {
+  margin-top: 1.5rem;
+}
+
+.tabs-list {
+  display: flex;
+  border: 1px solid var(--border);
+  background-color: rgba(30, 41, 59, 0.5);
+  border-radius: 0.25rem;
+  overflow: hidden;
+  width: fit-content;
+  margin-bottom: 1.5rem;
+}
+
+.tab {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.tab.active {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+.tab-content {
+  display: none;
+  min-height: 500px;
+}
+
+.tab-content.active {
+  display: block;
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Simulator styles */
+.simulator-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.matrix-inputs {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+}
+
+.input-section h3 {
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.config-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.input-group label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.input-group input {
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 0.25rem;
+  background-color: rgba(15, 23, 42, 0.8);
+  color: var(--text-primary);
+  max-width: 100px;
+}
+
+.matrices {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  display: none;
+}
+
+.matrix-section {
+  margin-bottom: 1.5rem;
+}
+
+.matrix-section h3 {
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.resource-inputs {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.matrix-tables {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.matrix-table h3 {
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid var(--border);
+  padding: 0.5rem;
+  text-align: center;
+}
+
+th {
+  background-color: rgba(15, 23, 42, 0.8);
+  color: var(--text-secondary);
+}
+
+td input {
+  width: 100%;
+  padding: 0.25rem;
+  border: 1px solid var(--border);
+  border-radius: 0.25rem;
+  background-color: rgba(15, 23, 42, 0.8);
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.results {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  display: none;
+}
+
+.results h3 {
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.safety-status {
+  padding: 0.75rem;
+  border-radius: 0.25rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.safe {
+  background-color: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: var(--safe);
+}
+
+.unsafe {
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: var(--unsafe);
+}
+
+.safe-sequence {
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+}
+
+.execution-steps {
+  background-color: rgba(15, 23, 42, 0.8);
+  border-radius: 0.25rem;
+  padding: 1rem;
+  white-space: pre-line;
+}
+
+/* Explanation styles */
+.explanation-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.explanation-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+}
+
+.card-title {
+  color: var(--primary);
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+}
+
+.card-text {
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.concept-list {
+  list-style-type: none;
+}
+
+.concept-list li {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.bullet {
+  color: var(--secondary);
+  content: "•";
+}
+
+.concept-title {
+  color: var(--secondary);
+}
+
+.algorithm-step {
+  background-color: rgba(15, 23, 42, 0.5);
+  padding: 1rem;
+  border-radius: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.step-title {
+  color: var(--secondary);
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.step-text, .step-list {
+  color: var(--text-secondary);
+}
+
+.step-list {
+  padding-left: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.advantages-limitations {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.advantages {
+  background-color: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 1rem;
+  border-radius: 0.25rem;
+}
+
+.limitations {
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 1rem;
+  border-radius: 0.25rem;
+}
+
+.advantage-title {
+  color: var(--safe);
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+}
+
+.limitation-title {
+  color: var(--unsafe);
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+}
+
+.advantage-list, .limitation-list {
+  list-style-type: none;
+}
+
+.advantage-list li, .limitation-list li {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.check {
+  color: var(--safe);
+}
+
+.cross {
+  color: var(--unsafe);
+}
+
+/* Footer styles */
+.footer {
+  margin-top: 5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .title {
+    font-size: 2rem;
+  }
+  
+  .matrix-tables {
+    grid-template-columns: 1fr;
+  }
+  
+  .config-inputs {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .advantages-limitations {
+    grid-template-columns: 1fr;
+  }
+}
+    </style>
+  </head>
+
+  <body>
+    <div class="min-h-screen bg-gradient">
+      <div class="container">
+        <header class="header">
+          <div class="header-controls">
+            <button class="btn btn-outline" onclick="window.location.href='index.html#algorithms'">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7"></path>
+              </svg>
+              <span>Back to Home</span>
+            </button>
+            
+            <div class="pro-badge">
+              <span></span>
+            </div>
+          </div>
+          
+          <h1 class="title">Banker's Algorithm Visualizer</h1>
+          <p class="subtitle">
+            Simulate and visualize resource allocation using the Banker's Algorithm to prevent deadlocks
+            in operating systems.
+          </p>
+        </header>
+
+        <div class="tabs">
+          <div class="tabs-list">
+            <button class="tab active" onclick="switchTab('simulator')">Simulator</button>
+            <button class="tab" onclick="switchTab('explanation')">Algorithm Explanation</button>
+          </div>
+          
+          <div class="tab-content active" id="simulator">
+            <div class="simulator-container">
+              <div class="matrix-inputs">
+                <div class="input-section">
+                  <h3>Configuration</h3>
+                  <div class="config-inputs">
+                    <div class="input-group">
+                      <label for="processes">Number of Processes:</label>
+                      <input type="number" id="processes" min="1" max="10" value="3">
+                    </div>
+                    <div class="input-group">
+                      <label for="resources">Number of Resources:</label>
+                      <input type="number" id="resources" min="1" max="10" value="3">
+                    </div>
+                    <button class="btn btn-primary" onclick="generateMatrices()">Generate Matrices</button>
+                  </div>
+                </div>
+              </div>
+              
+              <div id="matrices" class="matrices">
+                <div class="matrix-section">
+                  <h3>Available Resources</h3>
+                  <div id="available-resources" class="resource-inputs"></div>
+                </div>
+                
+                <div class="matrix-tables">
+                  <div class="matrix-table">
+                    <h3>Allocation Matrix</h3>
+                    <table id="allocation-matrix"></table>
+                  </div>
+                  
+                  <div class="matrix-table">
+                    <h3>Maximum Matrix</h3>
+                    <table id="maximum-matrix"></table>
+                  </div>
+                  
+                  <div class="matrix-table">
+                    <h3>Need Matrix</h3>
+                    <table id="need-matrix"></table>
+                  </div>
+                </div>
+                
+                <div class="actions">
+                  <button class="btn btn-primary" onclick="runBankersAlgorithm()">Run Safety Algorithm</button>
+                  <button class="btn btn-secondary" onclick="resetMatrices()">Reset</button>
+                </div>
+              </div>
+              
+              <div id="results" class="results">
+                <h3>Safety Analysis Results</h3>
+                <div id="safety-status" class="safety-status"></div>
+                <div id="safe-sequence" class="safe-sequence"></div>
+                <div id="execution-steps" class="execution-steps"></div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="tab-content" id="explanation">
+            <div class="explanation-container">
+              <div class="explanation-card">
+                <h3 class="card-title">What is the Banker's Algorithm?</h3>
+                <p class="card-text">
+                  The Banker's Algorithm is a resource allocation and deadlock avoidance 
+                  algorithm developed by Edsger Dijkstra that tests for safety by simulating 
+                  the allocation of maximum possible resources to all processes and then making 
+                  a safe-state check to test for possible deadlock conditions for all other pending activities.
+                </p>
+              </div>
+
+              <div class="explanation-card">
+                <h3 class="card-title">Key Concepts</h3>
+                <ul class="concept-list">
+                  <li>
+                    <span class="bullet"></span>
+                    <span>
+                      <strong class="concept-title">Safe State:</strong> A state is safe if the system can allocate resources to each process in some order and still avoid a deadlock.
+                    </span>
+                  </li>
+                  <li>
+                    <span class="bullet"></span>
+                    <span>
+                      <strong class="concept-title">Safe Sequence:</strong> A sequence of processes where the resource needs of each process can be satisfied.
+                    </span>
+                  </li>
+                  <li>
+                    <span class="bullet"></span>
+                    <span>
+                      <strong class="concept-title">Allocation Matrix:</strong> The amount of each resource currently allocated to each process.
+                    </span>
+                  </li>
+                  <li>
+                    <span class="bullet"></span>
+                    <span>
+                      <strong class="concept-title">Max Matrix:</strong> The maximum amount of each resource a process may need.
+                    </span>
+                  </li>
+                  <li>
+                    <span class="bullet"></span>
+                    <span>
+                      <strong class="concept-title">Need Matrix:</strong> The remaining resource needs of each process (Max - Allocation).
+                    </span>
+                  </li>
+                  <li>
+                    <span class="bullet"></span>
+                    <span>
+                      <strong class="concept-title">Available Vector:</strong> The available amount of each resource.
+                    </span>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="explanation-card">
+                <h3 class="card-title">How the Algorithm Works</h3>
+                
+                <div class="algorithm-step">
+                  <h4 class="step-title">1. Initialization</h4>
+                  <p class="step-text">
+                    Define the Allocation, Max, and Available matrices. Calculate the Need matrix.
+                  </p>
+                </div>
+                
+                <div class="algorithm-step">
+                  <h4 class="step-title">2. Safety Algorithm</h4>
+                  <ul class="step-list">
+                    <li>• Initialize Work = Available and Finish[i] = false for all processes.</li>
+                    <li>• Find an i such that both Finish[i] = false and Need<sub>i</sub> ≤ Work.</li>
+                    <li>• If no such i exists, go to step 4.</li>
+                    <li>• Work = Work + Allocation<sub>i</sub> and Finish[i] = true.</li>
+                    <li>• Go to step 2.</li>
+                    <li>• If Finish[i] = true for all i, the system is in a safe state.</li>
+                  </ul>
+                </div>
+                
+                <div class="algorithm-step">
+                  <h4 class="step-title">3. Resource-Request Algorithm</h4>
+                  <p class="step-text">
+                    For a request Request<sub>i</sub> from process i:
+                  </p>
+                  <ul class="step-list">
+                    <li>• If Request<sub>i</sub> ≤ Need<sub>i</sub>, go to step 2. Otherwise, raise an error.</li>
+                    <li>• If Request<sub>i</sub> ≤ Available, go to step 3. Otherwise, process must wait.</li>
+                    <li>• Simulate allocation by modifying Available, Allocation, and Need.</li>
+                    <li>• Run the safety algorithm. If safe, allocate the resources. If unsafe, revert changes and wait.</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="explanation-card">
+                <h3 class="card-title">Advantages & Limitations</h3>
+                
+                <div class="advantages-limitations">
+                  <div class="advantages">
+                    <h4 class="advantage-title">Advantages</h4>
+                    <ul class="advantage-list">
+                      <li>
+                        <span class="check">✓</span>
+                        <span>Prevents deadlock states in resource allocation systems</span>
+                      </li>
+                      <li>
+                        <span class="check">✓</span>
+                        <span>Ensures efficient resource utilization</span>
+                      </li>
+                      <li>
+                        <span class="check">✓</span>
+                        <span>Allows dynamic resource allocation based on safety checks</span>
+                      </li>
+                      <li>
+                        <span class="check">✓</span>
+                        <span>Capable of handling multiple resource types simultaneously</span>
+                      </li>
+                    </ul>
+                  </div>
+                  
+                  <div class="limitations">
+                    <h4 class="limitation-title">Limitations</h4>
+                    <ul class="limitation-list">
+                      <li>
+                        <span class="cross">✗</span>
+                        <span>Requires knowledge of maximum resource needs in advance</span>
+                      </li>
+                      <li>
+                        <span class="cross">✗</span>
+                        <span>May lead to inefficient resource utilization due to conservative allocation</span>
+                      </li>
+                      <li>
+                        <span class="cross">✗</span>
+                        <span>Processes may be delayed even when resources are available</span>
+                      </li>
+                      <li>
+                        <span class="cross">✗</span>
+                        <span>Implementation overhead in real systems</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <footer class="footer">
+          <p>© <span id="current-year"></span> OS Battleground Developer Team</p>
+        </footer>
+      </div>
+    </div>
+    <script>
+
+// Set current year in footer
+document.getElementById('current-year').textContent = new Date().getFullYear();
+
+// Tab switching functionality
+function switchTab(tabId) {
+  // Hide all tab contents
+  document.querySelectorAll('.tab-content').forEach(content => {
+    content.classList.remove('active');
+  });
+  
+  // Remove active class from all tabs
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  
+  // Show the selected tab content and set the tab as active
+  document.getElementById(tabId).classList.add('active');
+  
+  // Find the tab button that corresponds to this tab and make it active
+  document.querySelectorAll('.tab').forEach(tab => {
+    if (tab.textContent.toLowerCase().includes(tabId.toLowerCase())) {
+      tab.classList.add('active');
     }
+  });
+}
 
-    function runBankersAlgorithm() {
-      const n = parseInt(document.getElementById('n').value);
-      const m = parseInt(document.getElementById('m').value);
-      let Allocation = [], Max = [], Need = [], Available = [];
+// Generate matrix tables
+function generateMatrices() {
+  const processes = parseInt(document.getElementById('processes').value);
+  const resources = parseInt(document.getElementById('resources').value);
+  
+  if (isNaN(processes) || processes < 1 || isNaN(resources) || resources < 1) {
+    alert('Please enter valid numbers for processes and resources.');
+    return;
+  }
+  
+  // Show matrices section
+  document.querySelector('.matrices').style.display = 'block';
+  
+  // Generate Available Resources inputs
+  const availableResources = document.getElementById('available-resources');
+  availableResources.innerHTML = '';
+  
+  for (let j = 0; j < resources; j++) {
+    const input = document.createElement('input');
+    input.type = 'number';
+    input.id = `avail${j}`;
+    input.min = '0';
+    input.value = '0';
+    availableResources.appendChild(input);
+  }
+  
+  // Generate Allocation Matrix
+  generateMatrixTable('allocation-matrix', processes, resources, 'alloc');
+  
+  // Generate Maximum Matrix
+  generateMatrixTable('maximum-matrix', processes, resources, 'max');
+  
+  // Generate Need Matrix (read-only, calculated)
+  generateMatrixTable('need-matrix', processes, resources, 'need', true);
+  
+  // Add event listeners to update Need matrix when Allocation or Maximum changes
+  document.querySelectorAll('[id^="alloc"], [id^="max"]').forEach(input => {
+    input.addEventListener('input', updateNeedMatrix);
+  });
+  
+  // Initial calculation of Need matrix
+  updateNeedMatrix();
+}
 
-      for (let i = 0; i < n; i++) {
-        Allocation[i] = [], Max[i] = [], Need[i] = [];
-        for (let j = 0; j < m; j++) {
-          Allocation[i][j] = parseInt(document.getElementById(`alloc${i}${j}`).value);
-          Max[i][j] = parseInt(document.getElementById(`max${i}${j}`).value);
-          Need[i][j] = Max[i][j] - Allocation[i][j];
-        }
+function generateMatrixTable(tableId, rows, cols, prefix, readOnly = false) {
+  const table = document.getElementById(tableId);
+  table.innerHTML = '';
+  
+  // Create header row
+  const headerRow = document.createElement('tr');
+  headerRow.appendChild(document.createElement('th')); // Empty corner cell
+  
+  for (let j = 0; j < cols; j++) {
+    const th = document.createElement('th');
+    th.textContent = `R${j}`;
+    headerRow.appendChild(th);
+  }
+  
+  table.appendChild(headerRow);
+  
+  // Create data rows
+  for (let i = 0; i < rows; i++) {
+    const row = document.createElement('tr');
+    
+    // Process label cell
+    const labelCell = document.createElement('th');
+    labelCell.textContent = `P${i}`;
+    row.appendChild(labelCell);
+    
+    // Resource cells
+    for (let j = 0; j < cols; j++) {
+      const td = document.createElement('td');
+      
+      if (!readOnly) {
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.id = `${prefix}${i}${j}`;
+        input.min = '0';
+        input.value = '0';
+        td.appendChild(input);
+      } else {
+        // For Need matrix, just create span elements that will be updated
+        const span = document.createElement('span');
+        span.id = `${prefix}${i}${j}`;
+        td.appendChild(span);
       }
-      for (let j = 0; j < m; j++) {
-        Available[j] = parseInt(document.getElementById(`avail${j}`).value);
-      }
-      let finish = new Array(n).fill(false);
-      let safeSequence = [];
+      
+      row.appendChild(td);
+    }
+    
+    table.appendChild(row);
+  }
+}
 
-      for (let k = 0; k < n; k++) {
-        let found = false;
-        for (let i = 0; i < n; i++) {
-          if (!finish[i]) {
-            let canAllocate = true;
-            for (let j = 0; j < m; j++) {
-              if (Need[i][j] > Available[j]) {
-                canAllocate = false;
-                break;
-              }
-            }
-            if (canAllocate) {
-              for (let j = 0; j < m; j++) {
-                Available[j] += Allocation[i][j];
-              }
-              safeSequence.push(`P${i}`);
-              finish[i] = true;
-              found = true;
-            }
+function updateNeedMatrix() {
+  const processes = parseInt(document.getElementById('processes').value);
+  const resources = parseInt(document.getElementById('resources').value);
+  
+  for (let i = 0; i < processes; i++) {
+    for (let j = 0; j < resources; j++) {
+      const alloc = parseInt(document.getElementById(`alloc${i}${j}`).value) || 0;
+      const max = parseInt(document.getElementById(`max${i}${j}`).value) || 0;
+      const need = Math.max(0, max - alloc); // Need shouldn't be negative
+      
+      document.getElementById(`need${i}${j}`).textContent = need;
+    }
+  }
+}
+
+function resetMatrices() {
+  document.querySelectorAll('[id^="alloc"], [id^="max"], [id^="avail"]').forEach(input => {
+    input.value = '0';
+  });
+  updateNeedMatrix();
+  
+  // Hide results
+  document.querySelector('.results').style.display = 'none';
+}
+
+function runBankersAlgorithm() {
+  const processes = parseInt(document.getElementById('processes').value);
+  const resources = parseInt(document.getElementById('resources').value);
+  
+  // Initialize matrices
+  let allocation = [];
+  let max = [];
+  let need = [];
+  let available = [];
+  
+  // Get Available Resources
+  for (let j = 0; j < resources; j++) {
+    available[j] = parseInt(document.getElementById(`avail${j}`).value) || 0;
+  }
+  
+  // Get Allocation and Max matrices, calculate Need
+  for (let i = 0; i < processes; i++) {
+    allocation[i] = [];
+    max[i] = [];
+    need[i] = [];
+    
+    for (let j = 0; j < resources; j++) {
+      allocation[i][j] = parseInt(document.getElementById(`alloc${i}${j}`).value) || 0;
+      max[i][j] = parseInt(document.getElementById(`max${i}${j}`).value) || 0;
+      need[i][j] = max[i][j] - allocation[i][j];
+    }
+  }
+  
+  // Initialize safety algorithm
+  let work = [...available];
+  let finish = new Array(processes).fill(false);
+  let safeSequence = [];
+  let steps = [];
+  
+  // Safety Algorithm
+  let foundProcess;
+  do {
+    foundProcess = false;
+    
+    for (let i = 0; i < processes; i++) {
+      if (!finish[i]) {
+        // Check if process i can be allocated resources
+        let canAllocate = true;
+        
+        for (let j = 0; j < resources; j++) {
+          if (need[i][j] > work[j]) {
+            canAllocate = false;
+            break;
           }
         }
-        if (!found) break;
+        
+        if (canAllocate) {
+          // Process i can be allocated resources
+          steps.push(`Process P${i} can be allocated resources.`);
+          steps.push(`Work vector: [${work.join(', ')}]`);
+          
+          // Add resources from process i back to work
+          for (let j = 0; j < resources; j++) {
+            work[j] += allocation[i][j];
+          }
+          
+          steps.push(`After allocating resources to P${i}, work vector becomes: [${work.join(', ')}]`);
+          
+          // Mark process as finished and add to safe sequence
+          finish[i] = true;
+          safeSequence.push(i);
+          foundProcess = true;
+          
+          steps.push(`Process P${i} added to safe sequence.`);
+          steps.push('---');
+          break;
+        }
       }
-      const output = document.getElementById('output');
-      const allFinished = finish.every(f => f);
-      output.innerHTML = allFinished
-        ? `<h2>Safe Sequence:</h2><p>${safeSequence.join(' → ')}</p>`
-        : `<h2 style="color: red">Deadlock Detected: No Safe Sequence</h2>`;
     }
-  </script>
-</body>
+  } while (foundProcess);
+  
+  // Check if system is in safe state
+  const isSafe = finish.every(f => f);
+  
+  // Show results
+  document.querySelector('.results').style.display = 'block';
+  
+  const safetyStatus = document.getElementById('safety-status');
+  const safeSequenceDiv = document.getElementById('safe-sequence');
+  const executionSteps = document.getElementById('execution-steps');
+  
+  if (isSafe) {
+    safetyStatus.innerHTML = '<span class="safe">✓ The system is in a safe state</span>';
+    safeSequenceDiv.innerHTML = 'Safe Sequence: ' + safeSequence.map(i => `P${i}`).join(' → ');
+  } else {
+    safetyStatus.innerHTML = '<span class="unsafe">✗ The system is NOT in a safe state - Deadlock may occur!</span>';
+    safeSequenceDiv.innerHTML = 'Partial sequence: ' + safeSequence.map(i => `P${i}`).join(' → ');
+  }
+  
+  executionSteps.textContent = steps.join('\n');
+}
+
+// Initialize the page
+document.addEventListener('DOMContentLoaded', function() {
+  // Default to simulator tab
+  switchTab('simulator');
+});
+    </script>
+    
+
+  </body>
 </html>

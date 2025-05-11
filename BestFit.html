@@ -1,73 +1,659 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Best Fit Memory Allocation</title>
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8" /> <meta name="viewport" content="width=device-width, initial-scale=1.0" /> <title>Best Fit Memory Allocation Visualizer Pro</title> <meta name="description" content="A premium web application for simulating and visualizing the Best Fit Memory Allocation algorithm." /> <meta name="author" content="Lovable" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    :root {
+      --primary-color: #6c5ce7;
+      --secondary-color: #a29bfe;
+      --accent-color: #81ecec;
+      --text-color: #ffffff;
+      --bg-dark: #2d3436;
+      --bg-light: rgba(255, 255, 255, 0.1);
+      --border-color: rgba(255, 255, 255, 0.2);
+      --success-color: #00b894;
+      --danger-color: #d63031;
+    }
+    
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(to right, #8e2de2, #4a00e0);
-      color: white;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: var(--text-color);
+      min-height: 100vh;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .min-h-screen {
+      min-height: 100vh;
+    }
+    
+    .bg-gradient {
+      background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
       padding: 2rem;
+      position: relative;
+    }
+    
+    .header {
+      padding-bottom: 1.5rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border-color);
+      position: relative;
+    }
+    
+    .header-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      background: linear-gradient(to right, #fff, #ccc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .subtitle {
+      font-size: 1.1rem;
+      font-weight: 300;
+      max-width: 800px;
+      margin: 0 auto;
+      line-height: 1.6;
+      opacity: 0.9;
+    }
+    
+    .btn {
+      padding: 0.5rem 1rem;
+      border-radius: 0.375rem;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.875rem;
+      border: none;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: var(--text-color);
+    }
+    
+    .btn-primary:hover {
+      background-color: #5a49e0;
+    }
+    
+    .btn-secondary {
+      background-color: var(--bg-light);
+      color: var(--text-color);
+    }
+    
+    .btn-secondary:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .btn-outline {
+      border: 1px solid var(--border-color);
+      background-color: transparent;
+      color: var(--text-color);
+    }
+    
+    .btn-outline:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+/*     
+    .pro-badge {
+      background: linear-gradient(to right, #f9ca24, #f0932b);
+      color: #fff;
+      padding: 0.35rem 0.75rem;
+      border-radius: 2rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+     */
+    .tabs {
+      background-color: var(--bg-light);
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      margin-bottom: 2rem;
+      animation: fadeIn 0.6s ease-out;
+    }
+    
+    .tabs-list {
+      display: flex;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 1.5rem;
+    }
+    
+    .tab {
+      padding: 0.75rem 1.5rem;
+      font-weight: 500;
+      cursor: pointer;
+      opacity: 0.7;
+      background: none;
+      border: none;
+      color: var(--text-color);
+      font-size: 1rem;
+      position: relative;
+    }
+    
+    .tab::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: var(--accent-color);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+    
+    .tab:hover {
+      opacity: 0.9;
+    }
+    
+    .tab.active {
+      opacity: 1;
+    }
+    
+    .tab.active::after {
+      transform: scaleX(1);
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.4s ease-out;
+    }
+    
+    .input-section {
+      background-color: rgba(0, 0, 0, 0.15);
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .input-section h3 {
+      margin-bottom: 1rem;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    
+    .config-inputs {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
+    
+    .input-group label {
+      margin-bottom: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    
+    input {
+      padding: 0.75rem;
+      border-radius: 0.375rem;
+      border: 1px solid var(--border-color);
+      background-color: rgba(0, 0, 0, 0.2);
+      color: var(--text-color);
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+    
+    input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 2px rgba(129, 236, 236, 0.3);
+    }
+    
+    .matrices {
+      display: none;
+      margin-top: 2rem;
+    }
+    
+    .matrix-section {
+      margin-bottom: 1.5rem;
+    }
+    
+    .matrix-section h3 {
+      margin-bottom: 1rem;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    
+    .resource-inputs {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    
+    .resource-inputs input {
+      width: 60px;
       text-align: center;
     }
-    input, button {
-      padding: 0.5rem;
-      margin: 0.5rem;
-      border-radius: 5px;
-      border: none;
-      max-width: 100%;
-    }
-    .output {
+    
+    .actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
       margin-top: 2rem;
-      background: rgba(255, 255, 255, 0.1);
-      padding: 1rem;
-      border-radius: 10px;
-      overflow-x: auto;
     }
+    
+    .results {
+      display: none;
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background-color: rgba(0, 0, 0, 0.15);
+      border-radius: 0.5rem;
+      animation: fadeIn 0.6s ease-out;
+    }
+    
+    .results h3 {
+      margin-bottom: 1rem;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    
     table {
-      width: 90%;
-      margin: 0 auto;
-      border-collapse: collapse;
-      color: white;
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin-bottom: 1.5rem;
+      border-radius: 0.5rem;
+      overflow: hidden;
     }
+    
     th, td {
-      border: 1px solid white;
-      padding: 0.5rem;
+      padding: 0.75rem 1rem;
+      text-align: left;
     }
-    @media (max-width: 600px) {
-      input {
-        width: 80%;
+    
+    th {
+      background-color: rgba(0, 0, 0, 0.2);
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+    
+    tr:nth-child(even) {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+    
+    tr:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .footer {
+      margin-top: 2rem;
+      padding: 1rem 0;
+      text-align: center;
+      opacity: 0.7;
+      font-size: 0.875rem;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .safe {
+      color: var(--success-color);
+    }
+    
+    .unsafe {
+      color: var(--danger-color);
+    }
+    
+    /* Explanation Tab Styles */
+    .explanation-container {
+      display: grid;
+      gap: 1.5rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    
+    .explanation-card {
+      background-color: rgba(0, 0, 0, 0.15);
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+    }
+    
+    .card-title {
+      margin-bottom: 1rem;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--accent-color);
+    }
+    
+    .card-text {
+      line-height: 1.7;
+      opacity: 0.9;
+    }
+    
+    .concept-list {
+      list-style: none;
+      display: grid;
+      gap: 1rem;
+    }
+    
+    .concept-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+    
+    .bullet {
+      display: block;
+      width: 8px;
+      height: 8px;
+      background-color: var(--accent-color);
+      border-radius: 50%;
+      margin-top: 0.5rem;
+    }
+    
+    .concept-title {
+      color: var(--accent-color);
+      margin-right: 0.5rem;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
       }
-      table {
-        font-size: 0.9rem;
+      
+      .title {
+        font-size: 2rem;
+      }
+      
+      .tabs {
+        padding: 1rem;
+      }
+      
+      .tab {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+      }
+      
+      .input-group {
+        flex-direction: column;
+      }
+      
+      .input-group label {
+        margin-bottom: 0.5rem;
+      }
+      
+      .actions {
+        flex-direction: column;
+      }
+      
+      .config-inputs {
+        width: 100%;
       }
     }
   </style>
-</head>
-<body>
-  <h1>Best Fit Memory Allocation Simulator</h1>
-
-  <label>Number of Memory Blocks:</label>
-  <input type="number" id="numBlocks" min="1">
-  <br>
-  <label>Enter Memory Block Sizes (comma-separated):</label>
-  <input type="text" id="blockSizes">
-  <br>
-  <label>Enter Process Sizes (comma-separated):</label>
-  <input type="text" id="processSizes">
-  <br>
-  <button onclick="simulateBestFit()">Simulate</button>
-
-  <div class="output" id="output"></div>
-
+  </head> <body> <div class="min-h-screen bg-gradient"> <div class="container"> <header class="header"> <div class="header-controls"> <button class="btn btn-outline" onclick="window.location.href='index.html#algorithms'"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"> <path d="M19 12H5M12 19l-7-7 7-7"></path> </svg> <span>Back to Home</span> </button>
+          <div class="pro-badge">
+            <span></span>
+          </div>
+        </div>
+        
+        <h1 class="title">Best Fit Memory Allocation Visualizer</h1>
+        <p class="subtitle">
+          Simulate and visualize memory allocation using the Best Fit algorithm that allocates the smallest free partition which is big enough for the process.
+        </p>
+      </header>
+  
+      <div class="tabs">
+        <div class="tabs-list">
+          <button class="tab active" onclick="switchTab('simulator')">Simulator</button>
+          <button class="tab" onclick="switchTab('explanation')">Algorithm Explanation</button>
+        </div>
+        
+        <div class="tab-content active" id="simulator">
+          <div class="simulator-container">
+            <div class="input-section">
+              <h3>Configuration</h3>
+              <div class="config-inputs">
+                <div class="input-group">
+                  <label for="numBlocks">Number of Memory Blocks:</label>
+                  <input type="number" id="numBlocks" min="1" value="5">
+                </div>
+                <div class="input-group">
+                  <label for="blockSizes">Enter Memory Block Sizes (comma-separated):</label>
+                  <input type="text" id="blockSizes" placeholder="100,500,200,300,600">
+                </div>
+                <div class="input-group">
+                  <label for="processSizes">Enter Process Sizes (comma-separated):</label>
+                  <input type="text" id="processSizes" placeholder="212,417,112,426">
+                </div>
+                <button class="btn btn-primary" onclick="simulateBestFit()">Simulate Allocation</button>
+              </div>
+            </div>
+            
+            <div id="results" class="results">
+              <h3>Allocation Results</h3>
+              <div id="output"></div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="tab-content" id="explanation">
+          <div class="explanation-container">
+            <div class="explanation-card">
+              <h3 class="card-title">What is the Best Fit Memory Allocation?</h3>
+              <p class="card-text">
+                Best Fit is a memory allocation algorithm that allocates the smallest free partition which is big enough for the process. 
+                This strategy searches the entire list of free partitions and chooses the smallest partition that can accommodate the process.
+                The idea behind Best Fit is to minimize wasted memory space by allocating the closest matching block size.
+              </p>
+            </div>
+  
+            <div class="explanation-card">
+              <h3 class="card-title">Key Concepts</h3>
+              <ul class="concept-list">
+                <li>
+                  <span class="bullet"></span>
+                  <span>
+                    <strong class="concept-title">Memory Blocks:</strong> Contiguous areas of memory with specific sizes.
+                  </span>
+                </li>
+                <li>
+                  <span class="bullet"></span>
+                  <span>
+                    <strong class="concept-title">Processes:</strong> Programs or tasks that require memory allocation.
+                  </span>
+                </li>
+                <li>
+                  <span class="bullet"></span>
+                  <span>
+                    <strong class="concept-title">Internal Fragmentation:</strong> Occurs when allocated memory is slightly larger than requested memory, resulting in wasted space.
+                  </span>
+                </li>
+                <li>
+                  <span class="bullet"></span>
+                  <span>
+                    <strong class="concept-title">External Fragmentation:</strong> Occurs when there is enough total memory space to satisfy a request but it is not contiguous.
+                  </span>
+                </li>
+              </ul>
+            </div>
+  
+            <div class="explanation-card">
+              <h3 class="card-title">How the Algorithm Works</h3>
+              
+              <div class="algorithm-step">
+                <h4 class="step-title">1. Process all blocks and processes</h4>
+                <p class="step-text">
+                  The algorithm keeps track of all memory blocks and their sizes, as well as the processes that need memory allocation.
+                </p>
+              </div>
+              
+              <div class="algorithm-step">
+                <h4 class="step-title">2. Find the best fit for each process</h4>
+                <p class="step-text">
+                  For each process, the algorithm searches all available memory blocks to find the smallest block that is still large enough to accommodate the process.
+                </p>
+              </div>
+              
+              <div class="algorithm-step">
+                <h4 class="step-title">3. Allocate memory and update block size</h4>
+                <p class="step-text">
+                  When a suitable block is found, the process is allocated to that block, and the block size is reduced by the amount allocated.
+                </p>
+              </div>
+              
+              <div class="algorithm-step">
+                <h4 class="step-title">4. Handle allocation failures</h4>
+                <p class="step-text">
+                  If no suitable block is found for a process, it cannot be allocated and must wait for memory to become available.
+                </p>
+              </div>
+            </div>
+  
+            <div class="explanation-card">
+              <h3 class="card-title">Advantages & Limitations</h3>
+              
+              <div class="advantages-limitations">
+                <div class="advantages">
+                  <h4 class="advantage-title">Advantages</h4>
+                  <ul class="advantage-list">
+                    <li>
+                      <span class="check">✓</span>
+                      <span>Minimizes wasted memory by finding the closest match</span>
+                    </li>
+                    <li>
+                      <span class="check">✓</span>
+                      <span>Reduces internal fragmentation compared to First Fit</span>
+                    </li>
+                    <li>
+                      <span class="check">✓</span>
+                      <span>Better memory utilization over time</span>
+                    </li>
+                  </ul>
+                </div>
+                
+                <div class="limitations">
+                  <h4 class="limitation-title">Limitations</h4>
+                  <ul class="limitation-list">
+                    <li>
+                      <span class="cross">✗</span>
+                      <span>Slower than First Fit as it must search the entire list</span>
+                    </li>
+                    <li>
+                      <span class="cross">✗</span>
+                      <span>Can lead to many tiny unusable memory fragments</span>
+                    </li>
+                    <li>
+                      <span class="cross">✗</span>
+                      <span>May still result in external fragmentation over time</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer class="footer">
+        <p>© <span id="current-year"></span> OS Battleground Developer Team</p>
+      </footer>
+    </div>
+  </div>
+  
   <script>
+    // Set current year in footer
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+  
+    // Tab switching functionality
+    function switchTab(tabId) {
+      // Hide all tab contents
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      
+      // Remove active class from all tabs
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Show the selected tab content and set the tab as active
+      document.getElementById(tabId).classList.add('active');
+      
+      // Find the tab button that corresponds to this tab and make it active
+      document.querySelectorAll('.tab').forEach(tab => {
+        if (tab.textContent.toLowerCase().includes(tabId.toLowerCase())) {
+          tab.classList.add('active');
+        }
+      });
+    }
+  
+    // Best Fit Memory Allocation simulation
     function simulateBestFit() {
-      const blockSizes = document.getElementById("blockSizes").value.split(',').map(Number);
-      const processSizes = document.getElementById("processSizes").value.split(',').map(Number);
+      const numBlocks = parseInt(document.getElementById('numBlocks').value);
+      
+      // Get block sizes
+      let blockSizes;
+      const blockSizesInput = document.getElementById('blockSizes').value;
+      if (blockSizesInput.trim() === '') {
+        alert('Please enter the memory block sizes.');
+        return;
+      }
+      blockSizes = blockSizesInput.split(',').map(Number);
+      
+      // Get process sizes
+      let processSizes;
+      const processSizesInput = document.getElementById('processSizes').value;
+      if (processSizesInput.trim() === '') {
+        alert('Please enter the process sizes.');
+        return;
+      }
+      processSizes = processSizesInput.split(',').map(Number);
+      
+      // Create a copy of block sizes to avoid modifying the original array
+      const originalBlockSizes = [...blockSizes];
       const allocation = new Array(processSizes.length).fill(-1);
-
+  
       for (let i = 0; i < processSizes.length; i++) {
         let bestIdx = -1;
         for (let j = 0; j < blockSizes.length; j++) {
@@ -82,15 +668,36 @@
           blockSizes[bestIdx] -= processSizes[i];
         }
       }
-
-      let result = '<h2>Allocation Results</h2><table><tr><th>Process No.</th><th>Process Size</th><th>Block Allocated</th></tr>';
+  
+      // Generate the results table
+      let result = '<table><tr><th>Process No.</th><th>Process Size</th><th>Block Allocated</th><th>Block Original Size</th><th>Block Remaining Size</th></tr>';
       for (let i = 0; i < processSizes.length; i++) {
-        result += `<tr><td>${i + 1}</td><td>${processSizes[i]}</td><td>${allocation[i] !== -1 ? allocation[i] + 1 : 'Not Allocated'}</td></tr>`;
+        const blockAllocated = allocation[i] !== -1 ? allocation[i] + 1 : 'Not Allocated';
+        const originalSize = allocation[i] !== -1 ? originalBlockSizes[allocation[i]] : 'N/A';
+        const remainingSize = allocation[i] !== -1 ? blockSizes[allocation[i]] : 'N/A';
+        
+        result += `<tr>
+          <td>P${i + 1}</td>
+          <td>${processSizes[i]}</td>
+          <td>${blockAllocated}</td>
+          <td>${originalSize}</td>
+          <td>${remainingSize}</td>
+        </tr>`;
       }
       result += '</table>';
-
-      document.getElementById("output").innerHTML = result;
+  
+      // Add a summary of successful and failed allocations
+      const successCount = allocation.filter(a => a !== -1).length;
+      const failCount = allocation.filter(a => a === -1).length;
+      
+      result += `<div style="margin-top: 1.5rem;">
+        <p><strong>Summary:</strong> ${successCount} process(es) allocated successfully, ${failCount} process(es) could not be allocated.</p>
+      </div>`;
+  
+      document.getElementById('output').innerHTML = result;
+      document.getElementById('results').style.display = 'block';
     }
   </script>
-</body>
-</html>
+  </body> </html>
+  
+  
