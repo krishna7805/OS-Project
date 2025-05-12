@@ -612,6 +612,192 @@
         }
       }
 
+
+      /* Contact Section */
+      .container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 3rem 2rem;
+      }
+
+      .category {
+        margin-bottom: 4rem;
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      .category.visible {
+        animation: slideUpFade 0.8s ease forwards;
+      }
+
+      /* Suggestion Form Styles */
+      .suggestion-form {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 2.5rem;
+        backdrop-filter: blur(10px);
+        max-width: 600px;
+        margin: 2rem auto 0;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #fff;
+      }
+
+      .form-control {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        color: #fff;
+        font-family: 'Inter', sans-serif;
+        transition: all 0.3s ease;
+      }
+
+      .form-control:focus {
+        outline: none;
+        border-color: rgba(251, 192, 45, 0.6);
+        box-shadow: 0 0 0 2px rgba(251, 192, 45, 0.2);
+      }
+
+      .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      textarea.form-control {
+        min-height: 120px;
+        resize: vertical;
+      }
+
+      .submit-btn {
+        background: linear-gradient(45deg, #ff6f00, #fbc02d);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-block;
+        width: 100%;
+      }
+
+      .submit-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(251, 192, 45, 0.4);
+      }
+
+      .form-message {
+        margin-top: 1rem;
+        padding: 0.75rem;
+        border-radius: 6px;
+        font-weight: 500;
+        text-align: center;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+      }
+
+      .form-message.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .form-message.success {
+        background: rgba(46, 213, 115, 0.15);
+        color: #2ed573;
+      }
+
+      .form-message.error {
+        background: rgba(255, 71, 87, 0.15);
+        color: #ff4757;
+      }
+
+      .form-submitted .form-control,
+      .form-submitted .submit-btn {
+        opacity: 0.7;
+        pointer-events: none;
+      }
+
+      /* Star Rating Styles */
+      .rating-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+      }
+      
+      .rating-label {
+        display: block;
+        color: #fff;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+      }
+      
+      .stars {
+        display: flex;
+        gap: 0.75rem;
+      }
+      
+      .star {
+        font-size: 1.75rem;
+        cursor: pointer;
+        color: rgba(255, 255, 255, 0.3);
+        transition: all 0.2s ease;
+      }
+      
+      .star:hover,
+      .star.selected {
+        color: #fbc02d;
+        transform: scale(1.2);
+      }
+      
+      .star:hover ~ .star {
+        color: rgba(255, 255, 255, 0.3);
+      }
+      
+      .stars:hover .star {
+        color: rgba(255, 255, 255, 0.3);
+      }
+      
+      .stars .star:hover {
+        color: #fbc02d;
+      }
+      
+      .stars .star:hover ~ .star {
+        color: rgba(255, 255, 255, 0.3);
+      }
+      
+      .stars:hover .star.selected {
+        color: rgba(255, 255, 255, 0.3);
+      }
+      
+      .stars.rated .star.selected {
+        color: #fbc02d;
+      }
+      
+      .stars.rated:hover .star.selected {
+        color: #fbc02d;
+      }
+      
+      .rating-text {
+        height: 1.5rem;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        transition: all 0.2s ease;
+      }
+
+
       /* Footer */
       footer {
         background-color: rgba(0, 0, 0, 0.3);
@@ -1249,7 +1435,7 @@
     </section>
 
 
-    <!-- Contact Section -->
+ <!-- Contact Section -->
     <section class="container" id="contact">
       <div class="category visible">
         <h2 class="category-title">Get In Touch</h2>
@@ -1257,7 +1443,7 @@
           <p style="margin-bottom: 1.5rem; line-height: 1.7; text-align: center;">
             Have questions or suggestions? We'd love to hear from you!
           </p>
-          <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;">
+          <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; margin-bottom: 2rem;">
             <div style="text-align: center;">
               <div style="font-size: 2rem; margin-bottom: 1rem;">📧</div>
               <h3 style="margin-bottom: 0.5rem;">Email</h3>
@@ -1269,8 +1455,41 @@
               <p><a href="#" style="color: #fbc02d; text-decoration: none;">Twitter</a> / <a href="#" style="color: #fbc02d; text-decoration: none;">GitHub</a></p>
             </div>
           </div>
+          
+          <!-- Suggestion Form -->
+          <div class="suggestion-form" id="suggestionForm">
+            <h3 style="margin-bottom: 1.5rem; text-align: center; color: white;">Send Us Your Feedback</h3>
+            <form id="contactForm">
+              <div class="form-group">
+                <label for="name">Your Name</label>
+                <input type="text" class="form-control" id="name" placeholder="Enter your name" required>
+              </div>
+              <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+              </div>
+              <div class="rating-container">
+                <label class="rating-label">Your Rating</label>
+                <div class="stars" id="ratingStars">
+                  <span class="star" data-value="1">★</span>
+                  <span class="star" data-value="2">★</span>
+                  <span class="star" data-value="3">★</span>
+                  <span class="star" data-value="4">★</span>
+                  <span class="star" data-value="5">★</span>
+                </div>
+                <div class="rating-text" id="ratingText"></div>
+                <input type="hidden" id="rating" value="0">
+              </div>
+              <div class="form-group">
+                <label for="message">Your Suggestion</label>
+                <textarea class="form-control" id="message" placeholder="Share your thoughts, ideas or feedback..." required></textarea>
+              </div>
+              <button type="submit" class="submit-btn">Submit Feedback</button>
+            </form>
+            <div class="form-message" id="formMessage"></div>
+          </div>
         </div>
-      <!-- </div> -->
+      </div>
     </section>
 
     <!-- Footer -->
@@ -1286,7 +1505,7 @@
     </footer>
 
     <!-- Back to Top Button -->
-    <button class="back-to-top" id="backToTop">↑</button>
+    <button class="back-to-top" id="backToTop">↑↑</button>
 
     <!-- JavaScript -->
     <script>
@@ -1398,6 +1617,124 @@
           }
         });
       });
+
+
+
+           // Rating functionality
+      const stars = document.querySelectorAll('.star');
+      const ratingInput = document.getElementById('rating');
+      const ratingText = document.getElementById('ratingText');
+      const ratingStars = document.getElementById('ratingStars');
+      const ratingTexts = [
+        '', 
+        'Poor', 
+        'Fair', 
+        'Good', 
+        'Very Good', 
+        'Excellent'
+      ];
+      
+      stars.forEach(star => {
+        star.addEventListener('click', function() {
+          const value = parseInt(this.getAttribute('data-value'));
+          ratingInput.value = value;
+          
+          // Clear all selected stars first
+          stars.forEach(s => s.classList.remove('selected'));
+          
+          // Select stars up to the clicked one
+          for (let i = 0; i < stars.length; i++) {
+            if (i < value) {
+              stars[i].classList.add('selected');
+            }
+          }
+          
+          // Add rated class to container
+          ratingStars.classList.add('rated');
+          
+          // Update rating text
+          ratingText.textContent = ratingTexts[value];
+        });
+      });
+      
+      // Form handling
+      document.getElementById('contactForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const form = this;
+        const formMessage = document.getElementById('formMessage');
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const rating = document.getElementById('rating').value;
+        const message = document.getElementById('message').value;
+        
+        // Basic validation
+        if(!name || !email || !message) {
+          showFormMessage('Please fill all required fields.', 'error');
+          return;
+        }
+        
+        // Rating validation
+        if(rating == 0) {
+          showFormMessage('Please provide a rating.', 'error');
+          return;
+        }
+        
+        // Email validation using regex
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if(!emailPattern.test(email)) {
+          showFormMessage('Please enter a valid email address.', 'error');
+          return;
+        }
+        
+        // Form submission simulation
+        form.classList.add('form-submitted');
+        showFormMessage('Processing your submission...', 'info');
+        
+        // Simulate API call with setTimeout (replace with actual API call)
+        setTimeout(() => {
+          // Success response simulation
+          form.reset();
+          
+          // Reset stars
+          stars.forEach(s => s.classList.remove('selected'));
+          ratingStars.classList.remove('rated');
+          ratingText.textContent = '';
+          ratingInput.value = 0;
+          
+          showFormMessage('Thank you for your feedback! We will get back to you soon.', 'success');
+          
+          // Reset form state after 3 seconds
+          setTimeout(() => {
+            form.classList.remove('form-submitted');
+            hideFormMessage();
+          }, 3000);
+        }, 1500);
+        
+        // Log the form data (for demonstration)
+        console.log({
+          name,
+          email,
+          rating,
+          message
+        });
+      });
+      
+      function showFormMessage(text, type) {
+        const formMessage = document.getElementById('formMessage');
+        formMessage.textContent = text;
+        formMessage.className = 'form-message show';
+        
+        if(type) {
+          formMessage.classList.add(type);
+        }
+      }
+      
+      function hideFormMessage() {
+        const formMessage = document.getElementById('formMessage');
+        formMessage.className = 'form-message';
+        formMessage.textContent = '';
+      }
     </script>
   </body>
 </html>
