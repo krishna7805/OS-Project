@@ -631,171 +631,206 @@
       }
 
       /* Suggestion Form Styles */
-      .suggestion-form {
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
-        padding: 2.5rem;
-        backdrop-filter: blur(10px);
-        max-width: 600px;
-        margin: 2rem auto 0;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-      }
+      /* Contact Form Styles */
+#contact-form {
+  background: linear-gradient(to bottom right, rgba(109, 40, 217, 0.2), rgba(67, 56, 202, 0.2));
+  border-radius: 12px;
+  padding: 2.5rem;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  max-width: 600px;
+  margin: 2rem auto;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+}
 
-      .form-group {
-        margin-bottom: 1.5rem;
-      }
+#contact-form::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at top right, rgba(251, 192, 45, 0.1), transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+}
 
-      .form-group label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: 500;
-        color: #fff;
-      }
+#contact-form h1 {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  font-family: 'Poppins', sans-serif;
+  position: relative;
+  background: linear-gradient(45deg, #ff6f00, #fbc02d);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0px 2px 8px rgba(251, 192, 45, 0.3);
+}
 
-      .form-control {
-        width: 100%;
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 8px;
-        padding: 0.75rem 1rem;
-        color: #fff;
-        font-family: 'Inter', sans-serif;
-        transition: all 0.3s ease;
-      }
+#contact-form h1::after {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, #ff6f00, #fbc02d);
+  margin: 1rem auto 1.5rem;
+  border-radius: 3px;
+}
 
-      .form-control:focus {
-        outline: none;
-        border-color: rgba(251, 192, 45, 0.6);
-        box-shadow: 0 0 0 2px rgba(251, 192, 45, 0.2);
-      }
+#contact-form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #fbc02d;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
 
-      .form-control::placeholder {
-        color: rgba(255, 255, 255, 0.5);
-      }
+#contact-form input[type="text"],
+#contact-form input[type="email"],
+#contact-form input[type="tel"],
+#contact-form textarea {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(251, 192, 45, 0.2);
+  border-radius: 8px;
+  padding: 0.9rem 1.2rem;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  margin-bottom: 1.8rem;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
 
-      textarea.form-control {
-        min-height: 120px;
-        resize: vertical;
-      }
+#contact-form input[type="text"]:focus,
+#contact-form input[type="email"]:focus,
+#contact-form input[type="tel"]:focus,
+#contact-form textarea:focus {
+  outline: none;
+  border-color: rgba(251, 192, 45, 0.6);
+  box-shadow: 0 0 0 3px rgba(251, 192, 45, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.3);
+}
 
-      .submit-btn {
-        background: linear-gradient(45deg, #ff6f00, #fbc02d);
-        color: white;
-        border: none;
-        border-radius: 8px;
-        padding: 0.75rem 1.5rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        display: inline-block;
-        width: 100%;
-      }
+#contact-form input[type="text"]::placeholder,
+#contact-form input[type="email"]::placeholder,
+#contact-form input[type="tel"]::placeholder,
+#contact-form textarea::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
 
-      .submit-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(251, 192, 45, 0.4);
-      }
+#contact-form textarea {
+  min-height: 140px;
+  resize: vertical;
+}
 
-      .form-message {
-        margin-top: 1rem;
-        padding: 0.75rem;
-        border-radius: 6px;
-        font-weight: 500;
-        text-align: center;
-        opacity: 0;
-        transform: translateY(-10px);
-        transition: all 0.3s ease;
-      }
+#contact-form input[type="submit"] {
+  background: linear-gradient(45deg, #ff6f00, #fbc02d);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: block;
+  width: 100%;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 4px 15px rgba(251, 192, 45, 0.4);
+  position: relative;
+  overflow: hidden;
+}
 
-      .form-message.show {
-        opacity: 1;
-        transform: translateY(0);
-      }
+#contact-form input[type="submit"]::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+  z-index: 1;
+}
 
-      .form-message.success {
-        background: rgba(46, 213, 115, 0.15);
-        color: #2ed573;
-      }
+#contact-form input[type="submit"]:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(251, 192, 45, 0.5);
+}
 
-      .form-message.error {
-        background: rgba(255, 71, 87, 0.15);
-        color: #ff4757;
-      }
+#contact-form input[type="submit"]:active {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(251, 192, 45, 0.4);
+}
 
-      .form-submitted .form-control,
-      .form-submitted .submit-btn {
-        opacity: 0.7;
-        pointer-events: none;
-      }
+/* Animation for form elements */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-      /* Star Rating Styles */
-      .rating-container {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-        margin-bottom: 1.5rem;
-      }
-      
-      .rating-label {
-        display: block;
-        color: #fff;
-        font-weight: 500;
-        margin-bottom: 0.5rem;
-      }
-      
-      .stars {
-        display: flex;
-        gap: 0.75rem;
-      }
-      
-      .star {
-        font-size: 1.75rem;
-        cursor: pointer;
-        color: rgba(255, 255, 255, 0.3);
-        transition: all 0.2s ease;
-      }
-      
-      .star:hover,
-      .star.selected {
-        color: #fbc02d;
-        transform: scale(1.2);
-      }
-      
-      .star:hover ~ .star {
-        color: rgba(255, 255, 255, 0.3);
-      }
-      
-      .stars:hover .star {
-        color: rgba(255, 255, 255, 0.3);
-      }
-      
-      .stars .star:hover {
-        color: #fbc02d;
-      }
-      
-      .stars .star:hover ~ .star {
-        color: rgba(255, 255, 255, 0.3);
-      }
-      
-      .stars:hover .star.selected {
-        color: rgba(255, 255, 255, 0.3);
-      }
-      
-      .stars.rated .star.selected {
-        color: #fbc02d;
-      }
-      
-      .stars.rated:hover .star.selected {
-        color: #fbc02d;
-      }
-      
-      .rating-text {
-        height: 1.5rem;
-        color: rgba(255, 255, 255, 0.8);
-        font-size: 0.875rem;
-        margin-top: 0.25rem;
-        transition: all 0.2s ease;
-      }
+#contact-form h1,
+#contact-form label,
+#contact-form input,
+#contact-form textarea {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+#contact-form label:nth-child(2) { animation-delay: 0.1s; }
+#contact-form input:nth-child(3) { animation-delay: 0.2s; }
+#contact-form label:nth-child(4) { animation-delay: 0.3s; }
+#contact-form input:nth-child(5) { animation-delay: 0.4s; }
+#contact-form label:nth-child(6) { animation-delay: 0.5s; }
+#contact-form input:nth-child(7) { animation-delay: 0.6s; }
+#contact-form label:nth-child(8) { animation-delay: 0.7s; }
+#contact-form textarea { animation-delay: 0.8s; }
+#contact-form input[type="submit"] { animation-delay: 0.9s; }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  #contact-form {
+    padding: 2rem;
+    margin: 1.5rem 1rem;
+  }
+
+  #contact-form h1 {
+    font-size: 2.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  #contact-form {
+    padding: 1.5rem;
+  }
+
+  #contact-form h1 {
+    font-size: 1.8rem;
+  }
+
+  #contact-form input[type="submit"] {
+    padding: 0.85rem 1.25rem;
+    font-size: 1rem;
+  }
+}
+
 
 
       /* Footer */
@@ -1026,6 +1061,43 @@
           height: 40px;
         }
       }
+
+
+
+
+
+
+
+
+      .form-message {
+  display: none;
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.form-message.show {
+  display: block;
+}
+
+.form-message.success {
+  background: linear-gradient(to bottom right, #6d28d9, #4338ca, #6d28d9);
+  color: #0db634;
+}
+
+.form-message.error {
+  background: linear-gradient(to bottom right, #6d28d9, #4338ca, #6d28d9);
+  color: #721c24;
+}
+
+.form-message.info {
+  background: linear-gradient(to bottom right, #6d28d9, #4338ca, #6d28d9);
+  color: #0c5460;
+}
+
+      
     </style>
   </head>
 
@@ -1494,32 +1566,26 @@
           </div>
           
           <!-- Suggestion Form -->
-          <div class="suggestion-form" id="suggestionForm" >
+          <div class="suggestion-form" id="suggestionForm">
             <h3 style="margin-bottom: 1.5rem; text-align: center; color: white;">Send Us Your Feedback</h3>
-            <form id="contactForm" action="https://script.google.com/macros/s/AKfycbyz6u5awtaUHrJDhK0vtn13jEeWGTRoc6V2M2jjSKQEjVsJ1pozU3jWf1kE8jMyhhz6jA/exec" method="POST">
-              <div class="form-group">
-                <label for="name">Your Name</label>
-                <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required>            </div>
-              <div class="form-group">
-                <label for="email">Email Address</label>
-
-                <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>              <div class="rating-container">
-                <label class="rating-label">Your Rating</label>
-                <div class="stars" id="ratingStars">
-                  <span class="star" data-value="1">★</span>
-                  <span class="star" data-value="2">★</span>
-                  <span class="star" data-value="3">★</span>
-                  <span class="star" data-value="4">★</span>
-                  <span class="star" data-value="5">★</span>
-                </div>
-                <div class="rating-text" id="ratingText"></div>
-                <input type="hidden" id="rating" name="rating" value="0">
-              </div>
-              <div class="form-group">
-                <label for="message">Your Suggestion</label>
-
-<textarea class="form-control" id="message" name="message" placeholder="Share your thoughts..." required></textarea>              <button type="submit" class="submit-btn">Submit Feedback</button>
+            <form id="contact-form">
+              <h1>Contact Us</h1>
+              <label for="name">Name:</label><br>
+              <input type="text" id="name" name="name" required><br><br>
+            
+              <label for="email">Email:</label><br>
+              <input type="email" id="email" name="email" required><br><br>
+            
+              <label for="phone">Phone:</label><br>
+              <input type="tel" id="phone" name="phone" required><br><br>
+            
+              <label for="message">Message:</label><br>
+              <textarea id="message" name="message" required></textarea><br><br>
+            
+              <input type="submit" value="Submit">
             </form>
+            
+            
             <div class="form-message" id="formMessage"></div>
           </div>
         </div>
@@ -1537,6 +1603,31 @@
         <p class="footer-text">© 2025 OS Battleground. All rights reserved.</p>
       </div>
     </footer>
+    <!-- <script>
+      const scriptURL = 'https://script.google.com/macros/s/AKfycbw2w5RVduNyRnMdebvBpRZZyAo03BbhtrogL_fltWFZs-PmxPeeGh2654_wjAcKGKw/exec'; // Replace with your actual script URL
+      const form = document.getElementById('contact-form');
+    
+      form.addEventListener('submit', e => {
+        e.preventDefault();
+        const formData = new FormData(form);
+    
+        fetch(scriptURL, {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => {
+          alert('Form submitted successfully!');
+          form.reset();
+        })
+        .catch(error => {
+          alert('Error! Form not submitted.');
+          console.error('Error!', error.message);
+        });
+      });
+    </script> -->
+
+
+
 
     <!-- Back to Top Button -->
     <button class="back-to-top" id="backToTop">↑↑</button>
@@ -1654,137 +1745,65 @@
 
 
 
-           // Rating functionality
-      const stars = document.querySelectorAll('.star');
-      const ratingInput = document.getElementById('rating');
-      const ratingText = document.getElementById('ratingText');
-      const ratingStars = document.getElementById('ratingStars');
-      const ratingTexts = [
-        '', 
-        'Poor', 
-        'Fair', 
-        'Good', 
-        'Very Good', 
-        'Excellent'
-      ];
-      
-      stars.forEach(star => {
-        star.addEventListener('click', function() {
-          const value = parseInt(this.getAttribute('data-value'));
-          ratingInput.value = value;
-          
-          // Clear all selected stars first
-          stars.forEach(s => s.classList.remove('selected'));
-          
-          // Select stars up to the clicked one
-          for (let i = 0; i < stars.length; i++) {
-            if (i < value) {
-              stars[i].classList.add('selected');
-            }
-          }
-          
-          // Add rated class to container
-          ratingStars.classList.add('rated');
-          
-          // Update rating text
-          ratingText.textContent = ratingTexts[value];
-        });
-      });
       
       // Form handling
-      document.getElementById('contactForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const form = this;
-        const formMessage = document.getElementById('formMessage');
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const rating = document.getElementById('rating').value;
-        const message = document.getElementById('message').value;
-        
-        // Basic validation
-        if(!name || !email || !message) {
-          showFormMessage('Please fill all required fields.', 'error');
-          return;
-        }
-        
-        // Rating validation
-        if(rating == 0) {
-          showFormMessage('Please provide a rating.', 'error');
-          return;
-        }
-        
-        // Email validation using regex
-        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if(!emailPattern.test(email)) {
-          showFormMessage('Please enter a valid email address.', 'error');
-          return;
-        }
-        
-        // Form submission simulation
-        form.classList.add('form-submitted');
-        showFormMessage('Processing your submission...', 'info');
-        
-        // Simulate API call with setTimeout (replace with actual API call)
-        const scriptURL = "https://script.google.com/macros/s/AKfycbyz6u5awtaUHrJDhK0vtn13jEeWGTRoc6V2M2jjSKQEjVsJ1pozU3jWf1kE8jMyhhz6jA/exec";
-const formData = new FormData();
-formData.append("name", name);
-formData.append("email", email);
-formData.append("rating", rating);
-formData.append("message", message);
+const scriptURL = 'https://script.google.com/macros/s/AKfycbw2w5RVduNyRnMdebvBpRZZyAo03BbhtrogL_fltWFZs-PmxPeeGh2654_wjAcKGKw/exec';
+  const form = document.getElementById('contact-form');
+  const formMessage = document.getElementById('formMessage');
 
-fetch(scriptURL, {
-  method: "POST",
-  body: formData
-})
-.then(response => {
-  if (response.ok) {
-    form.reset();
-    stars.forEach(s => s.classList.remove('selected'));
-    ratingStars.classList.remove('rated');
-    ratingText.textContent = '';
-    ratingInput.value = 0;
+  form.addEventListener('submit', e => {
+    e.preventDefault();
 
-    showFormMessage('Thank you for your feedback! We will get back to you soon.', 'success');
+    // Get values
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const message = document.getElementById('message').value.trim();
 
-    setTimeout(() => {
-      form.classList.remove('form-submitted');
-      hideFormMessage();
-    }, 3000);
-  } else {
-    throw new Error("Network response was not ok.");
-  }
-})
-.catch(error => {
-  console.error("Error!", error.message);
-  showFormMessage("Something went wrong. Please try again later.", "error");
-});
-        
+    // Basic Validation
+    if (!name || !email || !phone || !message) {
+      showFormMessage('Please fill in all required fields.', 'error');
+      return;
+    }
 
-        // Log the form data (for demonstration)
-        console.log({
-          name,
-          email,
-          rating,
-          message
-        });
+    // Email format validation
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      showFormMessage('Please enter a valid email address.', 'error');
+      return;
+    }
+
+    // Send to Google Sheets
+    const formData = new FormData(form);
+    showFormMessage('Submitting your message...', 'info');
+
+    fetch(scriptURL, {
+      method: 'POST',
+      body: formData
+    })
+      .then(response => {
+        form.reset();
+        showFormMessage('Thank you! Your message has been sent successfully.', 'success');
+
+        setTimeout(() => {
+          hideFormMessage();
+        }, 4000);
+      })
+      .catch(error => {
+        showFormMessage('Oops! Something went wrong. Please try again.', 'error');
+        console.error('Error!', error.message);
       });
-      
-      function showFormMessage(text, type) {
-        const formMessage = document.getElementById('formMessage');
-        formMessage.textContent = text;
-        formMessage.className = 'form-message show';
-        
-        if(type) {
-          formMessage.classList.add(type);
-        }
-      }
-      
-      function hideFormMessage() {
-        const formMessage = document.getElementById('formMessage');
-        formMessage.className = 'form-message';
-        formMessage.textContent = '';
-      }
+  });
+
+  function showFormMessage(text, type) {
+    formMessage.textContent = text;
+    formMessage.className = 'form-message show ' + type;
+  }
+
+  function hideFormMessage() {
+    formMessage.textContent = '';
+    formMessage.className = 'form-message';
+  }
     </script>
   </body>
 </html>
