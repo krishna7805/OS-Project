@@ -1,163 +1,315 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FCFS Scheduling Simulator</title>
-  <style>
-    /* Global Styles */
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FCFS Scheduling Visualizer Pro</title>
+    <meta name="description" content="A premium web application for simulating and visualizing the First-Come-First-Serve CPU Scheduling algorithm." />
+    <meta name="author" content="Lovable" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <meta property="og:title" content="FCFS Scheduling Visualizer Pro" />
+    <meta property="og:description" content="A premium web application for simulating and visualizing the First-Come-First-Serve CPU Scheduling algorithm." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@lovable_dev" />
+    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    :root {
+      --background-from: #0f172a;
+      --background-via: #1e293b;
+      --background-to: #0f172a;
+      --text-primary: #ffffff;
+      --text-secondary: #cbd5e1;
+      --primary: #06b6d4;
+      --secondary: #14b8a6;
+      --accent: #f59e0b;
+      --border: #334155;
+      --card-bg: rgba(30, 41, 59, 0.6);
+      --btn-primary: #06b6d4;
+      --btn-primary-hover: #0891b2;
+      --btn-secondary: #475569;
+      --btn-secondary-hover: #334155;
+      --btn-outline: transparent;
+      --btn-outline-hover: #1e293b;
+      --safe: #10b981;
+      --unsafe: #ef4444;
     }
     
     body {
+      line-height: 1.5;
+      color: var(--text-primary);
+    }
+    
+    .min-h-screen {
       min-height: 100vh;
-      background: linear-gradient(to bottom right, #330867, #6c36af);
-      color: white;
-      padding: 20px;
+    }
+    
+    .bg-gradient {
+      background: linear-gradient(to bottom right, var(--background-from), var(--background-via), var(--background-to));
     }
     
     .container {
-      max-width: 1200px;
+      max-width: 1280px;
       margin: 0 auto;
+      padding: 2rem 1rem;
     }
     
-    header {
+    /* Header styles */
+    .header {
+      margin-bottom: 2rem;
+    }
+    
+    .header-controls {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 30px;
+      margin-bottom: 1.5rem;
     }
     
-    h1 {
-      font-size: 2rem;
-      text-align: center;
-      flex-grow: 1;
+    .title {
+      font-size: 2.5rem;
+      font-weight: bold;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 0.5rem;
     }
     
-    .back-button {
-      background-color: rgba(255, 255, 255, 0.2);
-      border: none;
-      color: white;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      justify-content: center;
+    .subtitle {
+      font-size: 1.125rem;
+      color: var(--text-secondary);
+      max-width: 48rem;
+    }
+    
+    .pro-badge span {
+      padding: 0.25rem 0.75rem;
+      background-color: rgba(245, 158, 11, 0.1);
+      color: var(--accent);
+      font-size: 0.75rem;
+      border-radius: 9999px;
+      border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+    
+    /* Button styles */
+    .btn {
+      display: inline-flex;
       align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 0.25rem;
+      font-size: 0.875rem;
+      font-weight: 500;
       cursor: pointer;
-      transition: background-color 0.3s;
+      transition: all 0.2s;
+      border: none;
     }
     
-    .back-button:hover {
-      background-color: rgba(255, 255, 255, 0.3);
+    .btn-primary {
+      background-color: var(--btn-primary);
+      color: white;
     }
     
-    .card {
+    .btn-primary:hover {
+      background-color: var(--btn-primary-hover);
+    }
+    
+    .btn-secondary {
+      background-color: var(--btn-secondary);
+      color: white;
+    }
+    
+    .btn-secondary:hover {
+      background-color: var(--btn-secondary-hover);
+    }
+    
+    .btn-outline {
+      background-color: var(--btn-outline);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+    
+    .btn-outline:hover {
+      background-color: var(--btn-outline-hover);
+      color: var(--text-primary);
+    }
+    
+    /* Tabs styles */
+    .tabs {
+      margin-top: 1.5rem;
+    }
+    
+    .tabs-list {
+      display: flex;
+      border: 1px solid var(--border);
+      background-color: rgba(30, 41, 59, 0.5);
+      border-radius: 0.25rem;
+      overflow: hidden;
+      width: fit-content;
+      margin-bottom: 1.5rem;
+    }
+    
+    .tab {
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .tab.active {
       background-color: rgba(255, 255, 255, 0.1);
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 20px;
-      backdrop-filter: blur(10px);
+      color: var(--text-primary);
     }
     
-    .card-title {
-      font-size: 1.5rem;
-      margin-bottom: 15px;
+    .tab-content {
+      display: none;
+      min-height: 500px;
+    }
+    
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.3s ease-out;
+    }
+    
+    /* Simulator styles */
+    .simulator-container {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+    
+    .matrix-inputs {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+    }
+    
+    .input-section h3 {
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+    
+    .config-inputs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: flex-end;
     }
     
     .input-group {
       display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 15px;
-      align-items: center;
+      flex-direction: column;
+      gap: 0.5rem;
     }
     
-    label {
-      font-size: 1rem;
-      white-space: nowrap;
+    .input-group label {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
     }
     
-    input[type="number"] {
-      padding: 8px;
-      border-radius: 4px;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      background-color: rgba(255, 255, 255, 0.1);
-      color: white;
-      max-width: 120px;
-    }
-    
-    button {
-      background-color: #9d4edd;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-    
-    button:hover {
-      background-color: #7b2cbf;
-    }
-    
-    .button-center {
-      display: flex;
-      justify-content: center;
-      margin-top: 15px;
-    }
-    
-    /* Table Styles */
-    .table-container {
-      overflow-x: auto;
-      margin-bottom: 20px;
-    }
-    
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    
-    th, td {
-      padding: 12px;
-      text-align: center;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    }
-    
-    th {
-      background-color: rgba(255, 255, 255, 0.1);
+    .input-group input {
+      padding: 0.5rem;
+      border: 1px solid var(--border);
+      border-radius: 0.25rem;
+      background-color: rgba(15, 23, 42, 0.8);
+      color: var(--text-primary);
+      max-width: 100px;
     }
     
     /* Process Form */
     .process-form {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 15px;
-      margin-bottom: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
     }
     
     .process-item {
-      background-color: rgba(255, 255, 255, 0.05);
-      padding: 15px;
-      border-radius: 6px;
+      background-color: rgba(15, 23, 42, 0.5);
+      padding: 1rem;
+      border-radius: 0.25rem;
+      border: 1px solid var(--border);
     }
     
-    .process-item label {
-      display: block;
-      margin-bottom: 5px;
+    .process-item h4 {
+      margin-bottom: 0.75rem;
+      color: var(--text-primary);
+    }
+    
+    .actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    
+    .results {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+    }
+    
+    .results h3 {
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+    
+    /* Table styles */
+    .table-container {
+      overflow-x: auto;
+      margin-bottom: 1.5rem;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.5rem;
+    }
+    
+    th, td {
+      border: 1px solid var(--border);
+      padding: 0.75rem;
+      text-align: center;
+    }
+    
+    th {
+      background-color: rgba(15, 23, 42, 0.8);
+      color: var(--text-secondary);
+    }
+    
+    tr:nth-child(even) {
+      background-color: rgba(15, 23, 42, 0.4);
     }
     
     /* Gantt Chart */
+    .gantt-container {
+      margin-bottom: 1.5rem;
+    }
+    
     .gantt-chart {
-      margin-top: 20px;
-      position: relative;
       height: 80px;
-      background-color: rgba(255, 255, 255, 0.05);
-      border-radius: 4px;
+      background-color: rgba(15, 23, 42, 0.4);
+      border-radius: 0.25rem;
+      position: relative;
+      margin-bottom: 0.5rem;
+      border: 1px solid var(--border);
       overflow-x: auto;
     }
     
@@ -165,320 +317,688 @@
       position: absolute;
       height: 50px;
       top: 15px;
-      border-radius: 4px;
+      border-radius: 0.25rem;
       display: flex;
       justify-content: center;
       align-items: center;
       color: white;
-      font-weight: bold;
+      font-weight: 500;
+      font-size: 0.875rem;
     }
     
     .gantt-timeline {
       display: flex;
       justify-content: space-between;
-      padding: 0 10px;
-      margin-top: 5px;
+      padding: 0 0.5rem;
+      color: var(--text-secondary);
+      font-size: 0.75rem;
     }
     
-    /* Performance Metrics */
+    /* Metrics styles */
+    .metrics-section {
+      margin-bottom: 1.5rem;
+    }
+    
     .metrics-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
     }
     
     .metric-item {
-      background-color: rgba(255, 255, 255, 0.05);
-      padding: 15px;
-      border-radius: 6px;
+      background-color: rgba(15, 23, 42, 0.4);
+      padding: 1rem;
+      border-radius: 0.25rem;
+      border: 1px solid var(--border);
     }
     
     .metric-title {
-      font-size: 1rem;
-      margin-bottom: 10px;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      margin-bottom: 0.5rem;
     }
     
     .metric-value {
+      color: var(--text-primary);
       font-size: 1.5rem;
-      font-weight: bold;
+      font-weight: 600;
     }
     
+    /* Explanation styles */
+    .explanation-container {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+    
+    .explanation-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+    }
+    
+    .card-title {
+      color: var(--primary);
+      margin-bottom: 1rem;
+      font-size: 1.25rem;
+    }
+    
+    .card-text {
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    
+    .concept-list {
+      list-style-type: none;
+    }
+    
+    .concept-list li {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+    
+    .bullet {
+      color: var(--secondary);
+      content: "•";
+    }
+    
+    .concept-title {
+      color: var(--secondary);
+    }
+    
+    .algorithm-step {
+      background-color: rgba(15, 23, 42, 0.5);
+      padding: 1rem;
+      border-radius: 0.25rem;
+      margin-bottom: 1rem;
+    }
+    
+    .step-title {
+      color: var(--secondary);
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+    }
+    
+    .step-text, .step-list {
+      color: var(--text-secondary);
+    }
+    
+    .step-list {
+      padding-left: 1.5rem;
+      margin-top: 0.5rem;
+    }
+    
+    .advantages-limitations {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .advantages {
+      background-color: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 1rem;
+      border-radius: 0.25rem;
+    }
+    
+    .limitations {
+      background-color: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      padding: 1rem;
+      border-radius: 0.25rem;
+    }
+    
+    .advantage-title {
+      color: var(--safe);
+      margin-bottom: 0.75rem;
+      font-size: 1rem;
+    }
+    
+    .limitation-title {
+      color: var(--unsafe);
+      margin-bottom: 0.75rem;
+      font-size: 1rem;
+    }
+    
+    .advantage-list, .limitation-list {
+      list-style-type: none;
+    }
+    
+    .advantage-list li, .limitation-list li {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .check {
+      color: var(--safe);
+    }
+    
+    .cross {
+      color: var(--unsafe);
+    }
+    
+    /* Footer styles */
+    .footer {
+      margin-top: 5rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+    }
+    
+    /* Animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Responsive design */
     @media (max-width: 768px) {
-      h1 {
-        font-size: 1.5rem;
+      .title {
+        font-size: 2rem;
       }
       
-      .card-title {
-        font-size: 1.2rem;
-      }
-      
-      .input-group {
+      .config-inputs {
         flex-direction: column;
         align-items: flex-start;
       }
       
-      input[type="number"] {
+      .actions {
+        flex-direction: column;
+      }
+      
+      .input-group input {
         max-width: 100%;
-        width: 100%;
+      }
+      
+      .process-form {
+        grid-template-columns: 1fr;
+      }
+      
+      .advantages-limitations {
+        grid-template-columns: 1fr;
       }
     }
-  </style>
-</head>
+  </style>    
+    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
+    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+  </head>
 
-<body>
-  <div class="container">
-    <header>
-      <button id="backButton" class="back-button">←</button>
-      <h1>FCFS Scheduling Simulator</h1>
-      <div style="width: 40px;"></div> <!-- For layout balance -->
-    </header>
+  <body>
+    <div class="min-h-screen bg-gradient">
+      <div class="container">
+        <header class="header">
+          <div class="header-controls">
+            <button class="btn btn-outline" onclick="window.location.href='index.html'">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7"></path>
+              </svg>
+              <span>Back to Home</span>
+            </button>
+            
+            <div class="pro-badge">
+              <span>Pro Version</span>
+            </div>
+          </div>
+          
+          <h1 class="title">FCFS Scheduling Visualizer</h1>
+          <p class="subtitle">
+            Simulate and visualize First-Come-First-Serve CPU scheduling algorithm to understand how processes are executed based on their arrival order.
+          </p>
+        </header>
 
-    <div id="configSection">
-      <div class="card">
-        <h2 class="card-title">Process Configuration</h2>
-        <div class="input-group">
-          <label for="numProcess">Number of Processes:</label>
-          <input type="number" id="numProcess" min="1" value="">
-        </div>
-        <div class="button-center">
-          <button id="generateButton">Generate Inputs</button>
+        <div class="tabs">
+          <div class="tabs-list">
+            <button class="tab active" onclick="switchTab('simulator')">Simulator</button>
+            <button class="tab" onclick="switchTab('explanation')">Algorithm Explanation</button>
+          </div>
+          
+          <div class="tab-content active" id="simulator">
+            <div class="simulator-container">
+              <div class="matrix-inputs">
+                <div class="input-section">
+                  <h3>Configuration</h3>
+                  <div class="config-inputs">
+                    <div class="input-group">
+                      <label for="numProcess">Number of Processes:</label>
+                      <input type="number" id="numProcess" min="1" max="10" value="">
+                    </div>
+                    <button class="btn btn-primary" id="generateButton">Generate Process Inputs</button>
+                  </div>
+                </div>
+                
+                <div id="processForm" class="process-form"></div>
+                
+                <div id="simulateButtonContainer" class="actions" style="display: none;">
+                  <button class="btn btn-primary" id="simulateButton">Simulate FCFS</button>
+                </div>
+              </div>
+              
+              <div id="results" class="results" style="display: none;">
+                <h3>Scheduling Results</h3>
+                
+                <div class="table-container">
+                  <table id="resultsTable">
+                    <thead>
+                      <tr>
+                        <th>Process</th>
+                        <th>Arrival Time</th>
+                        <th>Burst Time</th>
+                        <th>Start Time</th>
+                        <th>Completion Time</th>
+                        <th>Turnaround Time</th>
+                        <th>Waiting Time</th>
+                      </tr>
+                    </thead>
+                    <tbody id="resultsBody"></tbody>
+                  </table>
+                </div>
+                
+                <div class="gantt-container">
+                  <h3>Gantt Chart</h3>
+                  <div id="ganttChart" class="gantt-chart"></div>
+                  <div id="ganttTimeline" class="gantt-timeline"></div>
+                </div>
+                
+                <div class="metrics-section">
+                  <h3>Performance Metrics</h3>
+                  <div class="metrics-grid">
+                    <div class="metric-item">
+                      <div class="metric-title">Average Turnaround Time</div>
+                      <div id="avgTurnaround" class="metric-value">0.00 units</div>
+                    </div>
+                    <div class="metric-item">
+                      <div class="metric-title">Average Waiting Time</div>
+                      <div id="avgWaiting" class="metric-value">0.00 units</div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="actions">
+                  <button class="btn btn-primary" id="resetButton">Create New Simulation</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="tab-content" id="explanation">
+            <div class="explanation-container">
+              <div class="explanation-card">
+                <h3 class="card-title">What is FCFS Scheduling?</h3>
+                <p class="card-text">
+                  First-Come-First-Serve (FCFS) is the simplest CPU scheduling algorithm. 
+                  In this scheme, the process that requests the CPU first is allocated the CPU first.
+                  FCFS is a non-preemptive algorithm, meaning once a process starts executing, it continues until it completes or is blocked.
+                </p>
+              </div>
+
+              <div class="explanation-card">
+                <h3 class="card-title">Key Concepts</h3>
+                <ul class="concept-list">
+                  <li>
+                    <span class="bullet"></span>
+                    <span>
+                      <strong class="concept-title">Arrival Time:</strong> Time at which a process enters the ready queue.
+                    </span>
+                  </li>
+                  <li>
+                    <span class="bullet"></span>
+                    <span>
+                      <strong class="concept-title">Burst Time:</strong> Time required by a process for CPU execution.
+                    </span>
+                  </li>
+                  <li>
+                    <span class="bullet"></span>
+                    <span>
+                      <strong class="concept-title">Completion Time:</strong> Time at which a process completes execution.
+                    </span>
+                  </li>
+                  <li>
+                    <span class="bullet"></span>
+                    <span>
+                      <strong class="concept-title">Turnaround Time:</strong> Time taken from submission to completion (Completion Time - Arrival Time).
+                    </span>
+                  </li>
+                  <li>
+                    <span class="bullet"></span>
+                    <span>
+                      <strong class="concept-title">Waiting Time:</strong> Time a process waits in the ready queue (Turnaround Time - Burst Time).
+                    </span>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="explanation-card">
+                <h3 class="card-title">How the Algorithm Works</h3>
+                
+                <div class="algorithm-step">
+                  <h4 class="step-title">1. Process Arrival</h4>
+                  <p class="step-text">
+                    Processes arrive at the system at their respective arrival times and are placed in a ready queue.
+                  </p>
+                </div>
+                
+                <div class="algorithm-step">
+                  <h4 class="step-title">2. Execution Order</h4>
+                  <p class="step-text">
+                    The process that arrived first is executed first. If two processes have the same arrival time, the tie is broken by process ID or any other predefined criteria.
+                  </p>
+                </div>
+                
+                <div class="algorithm-step">
+                  <h4 class="step-title">3. Process Completion</h4>
+                  <p class="step-text">
+                    Once a process starts execution, it continues until completion. After completion, the CPU is assigned to the next process in the queue.
+                  </p>
+                </div>
+                
+                <div class="algorithm-step">
+                  <h4 class="step-title">4. Performance Metrics</h4>
+                  <p class="step-text">
+                    After all processes complete execution, metrics like average waiting time and average turnaround time are calculated to evaluate the scheduler's performance.
+                  </p>
+                </div>
+              </div>
+
+              <div class="explanation-card">
+                <h3 class="card-title">Advantages & Limitations</h3>
+                
+                <div class="advantages-limitations">
+                  <div class="advantages">
+                    <h4 class="advantage-title">Advantages</h4>
+                    <ul class="advantage-list">
+                      <li>
+                        <span class="check">✓</span>
+                        <span>Simple and easy to understand</span>
+                      </li>
+                      <li>
+                        <span class="check">✓</span>
+                        <span>Easy to implement</span>
+                      </li>
+                      <li>
+                        <span class="check">✓</span>
+                        <span>Fair for processes with same priority</span>
+                      </li>
+                    </ul>
+                  </div>
+                  
+                  <div class="limitations">
+                    <h4 class="limitation-title">Limitations</h4>
+                    <ul class="limitation-list">
+                      <li>
+                        <span class="cross">✗</span>
+                        <span>Can lead to "Convoy Effect" (short processes waiting behind long ones)</span>
+                      </li>
+                      <li>
+                        <span class="cross">✗</span>
+                        <span>Poor for interactive systems due to potentially high waiting times</span>
+                      </li>
+                      <li>
+                        <span class="cross">✗</span>
+                        <span>Average waiting time can be high compared to other algorithms</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         
-        <div id="processForm" class="process-form"></div>
-        
-        <div class="button-center" id="simulateButtonContainer" style="display: none;">
-          <button id="simulateButton">Simulate FCFS</button>
-        </div>
+        <footer class="footer">
+          <p>© <span id="current-year"></span> FCFS Scheduling Visualizer Pro. All rights reserved.</p>
+        </footer>
       </div>
     </div>
+    
+    <script>
+      // Set current year in footer
+document.getElementById('current-year').textContent = new Date().getFullYear();
 
-    <div id="resultsSection" style="display: none;">
-      <div class="card">
-        <h2 class="card-title">Scheduling Results</h2>
-        <div class="table-container">
-          <table id="resultsTable">
-            <thead>
-              <tr>
-                <th>Process</th>
-                <th>Arrival</th>
-                <th>Burst</th>
-                <th>Start</th>
-                <th>Completion</th>
-                <th>Turnaround</th>
-                <th>Waiting</th>
-              </tr>
-            </thead>
-            <tbody id="resultsBody"></tbody>
-          </table>
-        </div>
+// Tab switching functionality
+function switchTab(tabId) {
+  // Hide all tab contents
+  document.querySelectorAll('.tab-content').forEach(content => {
+    content.classList.remove('active');
+  });
+  
+  // Remove active class from all tabs
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  
+  // Show the selected tab content and set the tab as active
+  document.getElementById(tabId).classList.add('active');
+  
+  // Find the tab button that corresponds to this tab and make it active
+  document.querySelectorAll('.tab').forEach(tab => {
+    if (tab.textContent.toLowerCase().includes(tabId.toLowerCase())) {
+      tab.classList.add('active');
+    }
+  });
+}
+
+// Generate process input fields
+function generateProcessInputs() {
+  const numProcess = parseInt(document.getElementById('numProcess').value);
+  
+  if (isNaN(numProcess) || numProcess < 1) {
+    alert('Please enter a valid number of processes.');
+    return;
+  }
+  
+  // Generate process inputs
+  const processForm = document.getElementById('processForm');
+  processForm.innerHTML = '';
+  
+  for (let i = 0; i < numProcess; i++) {
+    const processItem = document.createElement('div');
+    processItem.className = 'process-item';
+    
+    processItem.innerHTML = `
+      <h4>Process P${i + 1}</h4>
+      <div class="input-group">
+        <label for="arrival${i}">Arrival Time:</label>
+        <input type="number" id="arrival${i}" min="0" value="0">
       </div>
-
-      <div class="card">
-        <h2 class="card-title">Gantt Chart</h2>
-        <div id="ganttChart" class="gantt-chart"></div>
-        <div id="ganttTimeline" class="gantt-timeline"></div>
+      <div class="input-group">
+        <label for="burst${i}">Burst Time:</label>
+        <input type="number" id="burst${i}" min="1" value="1">
       </div>
+    `;
+    
+    processForm.appendChild(processItem);
+  }
+  
+  // Show simulate button
+  document.getElementById('simulateButtonContainer').style.display = 'flex';
+}
 
-      <div class="card">
-        <h2 class="card-title">Performance Metrics</h2>
-        <div class="metrics-grid">
-          <div class="metric-item">
-            <div class="metric-title">Average Turnaround Time</div>
-            <div id="avgTurnaround" class="metric-value">0.00 units</div>
-          </div>
-          <div class="metric-item">
-            <div class="metric-title">Average Waiting Time</div>
-            <div id="avgWaiting" class="metric-value">0.00 units</div>
-          </div>
-        </div>
-      </div>
+// Run FCFS simulation
+function simulateFCFS() {
+  const numProcess = parseInt(document.getElementById('numProcess').value);
+  
+  if (isNaN(numProcess) || numProcess < 1) {
+    alert('Please enter a valid number of processes.');
+    return;
+  }
+  
+  // Get process data
+  let processes = [];
+  
+  for (let i = 0; i < numProcess; i++) {
+    const arrivalTime = parseInt(document.getElementById(`arrival${i}`).value) || 0;
+    const burstTime = parseInt(document.getElementById(`burst${i}`).value);
+    
+    if (isNaN(burstTime) || burstTime < 1) {
+      alert(`Please enter a valid burst time for Process P${i + 1}`);
+      return;
+    }
+    
+    processes.push({
+      id: i + 1,
+      arrival: arrivalTime,
+      burst: burstTime
+    });
+  }
+  
+  // Sort processes by arrival time (FCFS policy)
+  processes.sort((a, b) => a.arrival - b.arrival);
+  
+  // Calculate scheduling times
+  let currentTime = 0;
+  let totalTurnaround = 0;
+  let totalWaiting = 0;
+  
+  for (let i = 0; i < processes.length; i++) {
+    // If arrival time is after current time, CPU was idle
+    if (processes[i].arrival > currentTime) {
+      currentTime = processes[i].arrival;
+    }
+    
+    // Set start time for this process
+    processes[i].start = currentTime;
+    
+    // Calculate completion time
+    processes[i].completion = currentTime + processes[i].burst;
+    
+    // Calculate turnaround time (completion - arrival)
+    processes[i].turnaround = processes[i].completion - processes[i].arrival;
+    
+    // Calculate waiting time (turnaround - burst)
+    processes[i].waiting = processes[i].turnaround - processes[i].burst;
+    
+    // Update current time
+    currentTime = processes[i].completion;
+    
+    // Update totals
+    totalTurnaround += processes[i].turnaround;
+    totalWaiting += processes[i].waiting;
+  }
+  
+  // Calculate averages
+  const avgTurnaround = totalTurnaround / processes.length;
+  const avgWaiting = totalWaiting / processes.length;
+  
+  // Display results
+  displayResults(processes, avgTurnaround, avgWaiting);
+}
 
-      <div class="button-center">
-        <button id="resetButton">Create New Simulation</button>
-      </div>
-    </div>
-  </div>
+// Display simulation results
+function displayResults(processes, avgTurnaround, avgWaiting) {
+  // Show results section
+  document.getElementById('results').style.display = 'block';
+  
+  // Populate results table
+  const resultsBody = document.getElementById('resultsBody');
+  resultsBody.innerHTML = '';
+  
+  processes.forEach(p => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>P${p.id}</td>
+      <td>${p.arrival}</td>
+      <td>${p.burst}</td>
+      <td>${p.start}</td>
+      <td>${p.completion}</td>
+      <td>${p.turnaround}</td>
+      <td>${p.waiting}</td>
+    `;
+    resultsBody.appendChild(row);
+  });
+  
+  // Update average metrics
+  document.getElementById('avgTurnaround').textContent = avgTurnaround.toFixed(2) + ' units';
+  document.getElementById('avgWaiting').textContent = avgWaiting.toFixed(2) + ' units';
+  
+  // Create Gantt chart
+  createGanttChart(processes);
+}
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // DOM Elements
-      const backButton = document.getElementById('backButton');
-      const numProcessInput = document.getElementById('numProcess');
-      const generateButton = document.getElementById('generateButton');
-      const processForm = document.getElementById('processForm');
-      const simulateButtonContainer = document.getElementById('simulateButtonContainer');
-      const simulateButton = document.getElementById('simulateButton');
-      const resetButton = document.getElementById('resetButton');
-      const configSection = document.getElementById('configSection');
-      const resultsSection = document.getElementById('resultsSection');
-      const resultsBody = document.getElementById('resultsBody');
-      const ganttChart = document.getElementById('ganttChart');
-      const ganttTimeline = document.getElementById('ganttTimeline');
-      const avgTurnaround = document.getElementById('avgTurnaround');
-      const avgWaiting = document.getElementById('avgWaiting');
+// Create Gantt chart visualization
+function createGanttChart(processes) {
+  const ganttChart = document.getElementById('ganttChart');
+  const ganttTimeline = document.getElementById('ganttTimeline');
+  
+  // Clear previous chart
+  ganttChart.innerHTML = '';
+  ganttTimeline.innerHTML = '';
+  
+  // Find total execution time
+  const totalTime = processes[processes.length - 1].completion;
+  
+  // Create process blocks in Gantt chart
+  const colors = [
+    '#06b6d4', '#0ea5e9', '#3b82f6', '#8b5cf6', '#a855f7', 
+    '#d946ef', '#ec4899', '#f43f5e', '#f97316', '#84cc16'
+  ];
+  
+  let idleStart = 0;
+  
+  processes.forEach((p, index) => {
+    // Add idle block if there was idle time
+    if (p.start > idleStart) {
+      const idleBlock = document.createElement('div');
+      idleBlock.className = 'gantt-process';
+      idleBlock.style.left = (idleStart / totalTime * 100) + '%';
+      idleBlock.style.width = ((p.start - idleStart) / totalTime * 100) + '%';
+      idleBlock.style.backgroundColor = '#475569';
+      idleBlock.textContent = 'Idle';
+      ganttChart.appendChild(idleBlock);
+    }
+    
+    // Add process block
+    const block = document.createElement('div');
+    block.className = 'gantt-process';
+    block.style.left = (p.start / totalTime * 100) + '%';
+    block.style.width = (p.burst / totalTime * 100) + '%';
+    block.style.backgroundColor = colors[index % colors.length];
+    block.textContent = 'P' + p.id;
+    ganttChart.appendChild(block);
+    
+    // Update idle tracker
+    idleStart = p.completion;
+  });
+  
+  // Create timeline labels
+  const timePoints = 6; // Number of time points to display
+  for (let i = 0; i <= timePoints; i++) {
+    const timePoint = Math.round((totalTime / timePoints) * i);
+    const timeLabel = document.createElement('span');
+    timeLabel.textContent = timePoint;
+    ganttTimeline.appendChild(timeLabel);
+  }
+}
 
-      // Event Listeners
-      backButton.addEventListener('click', () => {
-  window.location.href = 'index.html#algorithms';
+// Reset simulation
+function resetSimulation() {
+  document.getElementById('numProcess').value = '';
+  document.getElementById('processForm').innerHTML = '';
+  document.getElementById('simulateButtonContainer').style.display = 'none';
+  document.getElementById('results').style.display = 'none';
+}
+
+// Initialize the page
+document.addEventListener('DOMContentLoaded', function() {
+  // Default to simulator tab
+  switchTab('simulator');
+  
+  // Add event listeners
+  document.getElementById('generateButton').addEventListener('click', generateProcessInputs);
+  document.getElementById('simulateButton').addEventListener('click', simulateFCFS);
+  document.getElementById('resetButton').addEventListener('click', resetSimulation);
 });
 
-      generateButton.addEventListener('click', generateInputs);
-      simulateButton.addEventListener('click', simulateFCFS);
-      resetButton.addEventListener('click', resetSimulation);
-
-      // Functions
-      function generateInputs() {
-        const n = parseInt(numProcessInput.value);
-        if (isNaN(n) || n <= 0) {
-          alert('Please enter a valid number of processes');
-          return;
-        }
-
-        processForm.innerHTML = '';
-        for (let i = 0; i < n; i++) {
-          const processItem = document.createElement('div');
-          processItem.className = 'process-item';
-          processItem.innerHTML = `
-            <label>Process P${i + 1}</label>
-            <div class="input-group">
-              <label>Arrival Time:</label>
-              <input type="number" id="arrival${i}" min="0" value="0">
-            </div>
-            <div class="input-group">
-              <label>Burst Time:</label>
-              <input type="number" id="burst${i}" min="1" value="1">
-            </div>
-          `;
-          processForm.appendChild(processItem);
-        }
-        
-        simulateButtonContainer.style.display = 'flex';
-      }
-
-      function simulateFCFS() {
-        const n = parseInt(numProcessInput.value);
-        if (isNaN(n) || n <= 0) {
-          alert('Please enter a valid number of processes');
-          return;
-        }
-
-        let processes = [];
-        let validProcesses = true;
-
-        for (let i = 0; i < n; i++) {
-          const arrivalInput = document.getElementById(`arrival${i}`);
-          const burstInput = document.getElementById(`burst${i}`);
-          
-          const at = parseInt(arrivalInput.value);
-          const bt = parseInt(burstInput.value);
-          
-          if (isNaN(at) || isNaN(bt) || bt <= 0) {
-            alert(`Please enter valid values for Process P${i+1}`);
-            validProcesses = false;
-            break;
-          }
-          
-          processes.push({ id: i + 1, arrival: at, burst: bt });
-        }
-
-        if (!validProcesses) return;
-
-        // Sort processes by arrival time
-        processes.sort((a, b) => a.arrival - b.arrival);
-
-        // Calculate times
-        let currentTime = 0;
-        let totalTurnaround = 0;
-        let totalWaiting = 0;
-        
-        processes.forEach(p => {
-          p.start = Math.max(currentTime, p.arrival);
-          p.completion = p.start + p.burst;
-          p.turnaround = p.completion - p.arrival;
-          p.waiting = p.start - p.arrival;
-          
-          totalTurnaround += p.turnaround;
-          totalWaiting += p.waiting;
-          
-          currentTime = p.completion;
-        });
-
-        // Show results
-        configSection.style.display = 'none';
-        resultsSection.style.display = 'block';
-        
-        // Update table
-        resultsBody.innerHTML = '';
-        processes.forEach(p => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>P${p.id}</td>
-            <td>${p.arrival}</td>
-            <td>${p.burst}</td>
-            <td>${p.start}</td>
-            <td>${p.completion}</td>
-            <td>${p.turnaround}</td>
-            <td>${p.waiting}</td>
-          `;
-          resultsBody.appendChild(row);
-        });
-        
-        // Update metrics
-        const avgTurnValue = totalTurnaround / processes.length;
-        const avgWaitValue = totalWaiting / processes.length;
-        
-        avgTurnaround.textContent = avgTurnValue.toFixed(2) + ' units';
-        avgWaiting.textContent = avgWaitValue.toFixed(2) + ' units';
-        
-        // Create Gantt chart
-        createGanttChart(processes);
-      }
-
-      function createGanttChart(processes) {
-        ganttChart.innerHTML = '';
-        ganttTimeline.innerHTML = '';
-        
-        if (processes.length === 0) return;
-
-        const lastProcess = processes[processes.length - 1];
-        const totalTime = lastProcess.completion;
-        const chartWidth = Math.max(totalTime * 50, ganttChart.offsetWidth - 40);
-        
-        // Colors for the Gantt chart
-        const colors = [
-          '#9d4edd', '#c77dff', '#e0aaff', '#7b2cbf', '#5a189a',
-          '#480ca8', '#3f37c9', '#4361ee', '#4895ef', '#4cc9f0'
-        ];
-        
-        // Create processes in Gantt chart
-        processes.forEach((p, index) => {
-          const block = document.createElement('div');
-          block.className = 'gantt-process';
-          block.style.left = (p.start / totalTime * 100) + '%';
-          block.style.width = (p.burst / totalTime * 100) + '%';
-          block.style.backgroundColor = colors[index % colors.length];
-          block.textContent = 'P' + p.id;
-          ganttChart.appendChild(block);
-        });
-        
-        // Create timeline markers
-        const markers = 5; // Number of time markers to show
-        for (let i = 0; i <= markers; i++) {
-          const time = Math.round((totalTime / markers) * i);
-          const marker = document.createElement('span');
-          marker.textContent = time;
-          ganttTimeline.appendChild(marker);
-        }
-      }
-
-      function resetSimulation() {
-        configSection.style.display = 'block';
-        resultsSection.style.display = 'none';
-        processForm.innerHTML = '';
-        simulateButtonContainer.style.display = 'none';
-        numProcessInput.value = '';
-      }
-    });
-  </script>
-</body>
+    </script>
+  </body>
 </html>
