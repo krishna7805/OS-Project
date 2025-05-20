@@ -1,561 +1,807 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Round Robin Scheduling Simulator</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Round Robin Scheduling Visualizer Pro</title>
+    <meta name="description" content="A premium web application for simulating and visualizing the Round Robin CPU Scheduling algorithm." />
+    <meta name="author" content="Lovable" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <meta property="og:title" content="Round Robin Scheduling Visualizer Pro" />
+    <meta property="og:description" content="A premium web application for simulating and visualizing the Round Robin CPU Scheduling algorithm." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@lovable_dev" />
+    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    
+    <link rel="stylesheet" href="styles.css">
+    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
+    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+  </head>
   <style>
-    /* Global Styles */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    
-    body {
-      min-height: 100vh;
-      background: linear-gradient(to bottom right, #1CB5E0, #000851);
-      color: white;
-      padding: 20px;
-    }
-    
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
-    }
-    
-    h1 {
-      font-size: 2rem;
-      text-align: center;
-      flex-grow: 1;
-    }
-    
-    .back-button {
-      background-color: rgba(255, 255, 255, 0.2);
-      border: none;
-      color: white;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-    
-    .back-button:hover {
-      background-color: rgba(255, 255, 255, 0.3);
-    }
-    
-    .card {
-      background-color: rgba(255, 255, 255, 0.1);
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 20px;
-      backdrop-filter: blur(10px);
-    }
-    
-    .card-title {
-      font-size: 1.5rem;
-      margin-bottom: 15px;
-    }
-    
-    .input-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 15px;
-      align-items: center;
-    }
-    
-    label {
-      font-size: 1rem;
-      white-space: nowrap;
-    }
-    
-    input[type="number"] {
-      padding: 8px;
-      border-radius: 4px;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      background-color: rgba(255, 255, 255, 0.1);
-      color: white;
-      max-width: 120px;
-    }
-    
-    button {
-      background-color: #00BCD4; /* Teal color */
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-    
-    button:hover {
-      background-color: #00ACC1; /* Darker teal */
-    }
-    
-    .button-center {
-      display: flex;
-      justify-content: center;
-      margin-top: 15px;
-    }
-    
-    /* Table Styles */
-    .table-container {
-      overflow-x: auto;
-      margin-bottom: 20px;
-    }
-    
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    
-    th, td {
-      padding: 12px;
-      text-align: center;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    }
-    
-    th {
-      background-color: rgba(255, 255, 255, 0.1);
-    }
-    
-    /* Process Form */
-    .process-form {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 15px;
-      margin-bottom: 20px;
-    }
-    
-    .process-item {
-      background-color: rgba(255, 255, 255, 0.05);
-      padding: 15px;
-      border-radius: 6px;
-    }
-    
-    .process-item label {
-      display: block;
-      margin-bottom: 5px;
-    }
-    
-    /* Gantt Chart */
-    .gantt-chart {
-      margin-top: 20px;
-      position: relative;
-      height: 80px;
-      background-color: rgba(255, 255, 255, 0.05);
-      border-radius: 4px;
-      overflow-x: auto;
-    }
-    
-    .gantt-process {
-      position: absolute;
-      height: 50px;
-      top: 15px;
-      border-radius: 4px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: white;
-      font-weight: bold;
-    }
-    
-    .gantt-timeline {
-      display: flex;
-      justify-content: space-between;
-      padding: 0 10px;
-      margin-top: 5px;
-    }
-    
-    /* Performance Metrics */
-    .metrics-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 20px;
-    }
-    
-    .metric-item {
-      background-color: rgba(255, 255, 255, 0.05);
-      padding: 15px;
-      border-radius: 6px;
-    }
-    
-    .metric-title {
-      font-size: 1rem;
-      margin-bottom: 10px;
-    }
-    
-    .metric-value {
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-    
-    /* Log Section */
-    .log-section {
-      max-height: 200px;
-      overflow-y: auto;
-      background-color: rgba(0, 0, 0, 0.2);
-      border-radius: 6px;
-      padding: 15px;
-      margin-bottom: 20px;
-    }
-    
-    .log-line {
-      padding: 4px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    @media (max-width: 768px) {
-      h1 {
-        font-size: 1.5rem;
-      }
-      
-      .card-title {
-        font-size: 1.2rem;
-      }
-      
-      .input-group {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      
-      input[type="number"] {
-        max-width: 100%;
-        width: 100%;
-      }
-    }
+
+/* Base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+:root {
+  --background-from: #0f172a;
+  --background-via: #1e293b;
+  --background-to: #0f172a;
+  --text-primary: #ffffff;
+  --text-secondary: #cbd5e1;
+  --primary: #06b6d4;
+  --secondary: #14b8a6;
+  --accent: #f59e0b;
+  --border: #334155;
+  --card-bg: rgba(30, 41, 59, 0.6);
+  --btn-primary: #06b6d4;
+  --btn-primary-hover: #0891b2;
+  --btn-secondary: #475569;
+  --btn-secondary-hover: #334155;
+  --btn-outline: transparent;
+  --btn-outline-hover: #1e293b;
+  --safe: #10b981;
+  --unsafe: #ef4444;
+}
+
+body {
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+.min-h-screen {
+  min-height: 100vh;
+}
+
+.bg-gradient {
+  background: linear-gradient(to bottom right, var(--background-from), var(--background-via), var(--background-to));
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* Header styles */
+.header {
+  margin-bottom: 2rem;
+}
+
+.header-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  background: linear-gradient(to right, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  max-width: 48rem;
+}
+
+.pro-badge span {
+  padding: 0.25rem 0.75rem;
+  background-color: rgba(245, 158, 11, 0.1);
+  color: var(--accent);
+  font-size: 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+/* Button styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.btn-primary {
+  background-color: var(--btn-primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--btn-primary-hover);
+}
+
+.btn-secondary {
+  background-color: var(--btn-secondary);
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: var(--btn-secondary-hover);
+}
+
+.btn-outline {
+  background-color: var(--btn-outline);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+
+.btn-outline:hover {
+  background-color: var(--btn-outline-hover);
+  color: var(--text-primary);
+}
+
+/* Tabs styles */
+.tabs {
+  margin-top: 1.5rem;
+}
+
+.tabs-list {
+  display: flex;
+  border: 1px solid var(--border);
+  background-color: rgba(30, 41, 59, 0.5);
+  border-radius: 0.25rem;
+  overflow: hidden;
+  width: fit-content;
+  margin-bottom: 1.5rem;
+}
+
+.tab {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.tab.active {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+.tab-content {
+  display: none;
+  min-height: 500px;
+}
+
+.tab-content.active {
+  display: block;
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Simulator styles */
+.simulator-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.matrix-inputs {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+}
+
+.input-section h3 {
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.config-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.input-group label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.input-group input {
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 0.25rem;
+  background-color: rgba(15, 23, 42, 0.8);
+  color: var(--text-primary);
+  max-width: 100px;
+}
+
+/* Process Form */
+.process-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.process-item {
+  background-color: rgba(15, 23, 42, 0.5);
+  padding: 1rem;
+  border-radius: 0.25rem;
+  border: 1px solid var(--border);
+}
+
+.process-item h4 {
+  margin-bottom: 0.75rem;
+  color: var(--text-primary);
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.results {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+}
+
+.results h3 {
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+/* Table styles */
+.table-container {
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+}
+
+th, td {
+  border: 1px solid var(--border);
+  padding: 0.75rem;
+  text-align: center;
+}
+
+th {
+  background-color: rgba(15, 23, 42, 0.8);
+  color: var(--text-secondary);
+}
+
+tr:nth-child(even) {
+  background-color: rgba(15, 23, 42, 0.4);
+}
+
+/* Log Container */
+.log-container {
+  margin-bottom: 1.5rem;
+}
+
+.execution-log {
+  background-color: rgba(15, 23, 42, 0.4);
+  border: 1px solid var(--border);
+  border-radius: 0.25rem;
+  padding: 0.75rem;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.log-line {
+  padding: 0.25rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.875rem;
+}
+
+/* Gantt Chart */
+.gantt-container {
+  margin-bottom: 1.5rem;
+}
+
+.gantt-chart {
+  height: 80px;
+  background-color: rgba(15, 23, 42, 0.4);
+  border-radius: 0.25rem;
+  position: relative;
+  margin-bottom: 0.5rem;
+  border: 1px solid var(--border);
+  overflow-x: auto;
+}
+
+.gantt-process {
+  position: absolute;
+  height: 50px;
+  top: 15px;
+  border-radius: 0.25rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.gantt-timeline {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+}
+
+/* Metrics styles */
+.metrics-section {
+  margin-bottom: 1.5rem;
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.metric-item {
+  background-color: rgba(15, 23, 42, 0.4);
+  padding: 1rem;
+  border-radius: 0.25rem;
+  border: 1px solid var(--border);
+}
+
+.metric-title {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+.metric-value {
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+/* Explanation styles */
+.explanation-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.explanation-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+}
+
+.card-title {
+  color: var(--primary);
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+}
+
+.card-text {
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.concept-list {
+  list-style-type: none;
+}
+
+.concept-list li {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.bullet {
+  color: var(--secondary);
+  content: "•";
+}
+
+.concept-title {
+  color: var(--secondary);
+}
+
+.algorithm-step {
+  background-color: rgba(15, 23, 42, 0.5);
+  padding: 1rem;
+  border-radius: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.step-title {
+  color: var(--secondary);
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.step-text, .step-list {
+  color: var(--text-secondary);
+}
+
+.step-list {
+  padding-left: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.advantages-limitations {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.advantages {
+  background-color: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 1rem;
+  border-radius: 0.25rem;
+}
+
+.limitations {
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 1rem;
+  border-radius: 0.25rem;
+}
+
+.advantage-title {
+  color: var(--safe);
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+}
+
+.limitation-title {
+  color: var(--unsafe);
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+}
+
+.advantage-list, .limitation-list {
+  list-style-type: none;
+}
+
+.advantage-list li, .limitation-list li {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.check {
+  color: var(--safe);
+}
+
+.cross {
+  color: var(--unsafe);
+}
+
+/* Footer styles */
+.footer {
+  margin-top: 5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .title {
+    font-size: 2rem;
+  }
+  
+  .config-inputs {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .actions {
+    flex-direction: column;
+  }
+  
+  .input-group input {
+    max-width: 100%;
+  }
+  
+  .process-form {
+    grid-template-columns: 1fr;
+  }
+  
+  .advantages-limitations {
+    grid-template-columns: 1fr;
+  }
+}
+
   </style>
-</head>
 
-<body>
-  <div class="container">
-    <header>
-      <button id="backButton" class="back-button">←</button>
-      <h1>Round Robin Scheduling Simulator</h1>
-      <div style="width: 40px;"></div> <!-- For layout balance -->
-    </header>
+  <body>
+    <div class="min-h-screen bg-gradient">
+      <div class="container">
+        <header class="header">
+          <div class="header-controls">
+            <button class="btn btn-outline" onclick="window.location.href='index.html'">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7"></path>
+              </svg>
+              <span>Back to Home</span>
+            </button>
+            
+            <div class="pro-badge">
+              <span>Pro Version</span>
+            </div>
+          </div>
+          
+          <h1 class="title">Round Robin Scheduling Visualizer</h1>
+          <p class="subtitle">
+            Simulate and visualize Round Robin CPU scheduling algorithm which executes processes for a fixed time slice in a circular queue.
+          </p>
+        </header>
 
-    <div id="configSection">
-      <div class="card">
-        <h2 class="card-title">Process Configuration</h2>
-        <div class="input-group">
-          <label for="numProcess">Number of Processes:</label>
-          <input type="number" id="numProcess" min="1" value="">
-        </div>
-        <div class="input-group">
-          <label for="timeQuantum">Time Quantum:</label>
-          <input type="number" id="timeQuantum" min="1" value="">
-        </div>
-        <div class="button-center">
-          <button id="generateButton">Generate Inputs</button>
-        </div>
+        <div class="tabs">
+          <div class="tabs-list">
+            <button class="tab active" onclick="switchTab('simulator')">Simulator</button>
+            <button class="tab" onclick="switchTab('explanation')">Algorithm Explanation</button>
+          </div>
+          
+          <div class="tab-content active" id="simulator">
+            <div class="simulator-container">
+              <div class="matrix-inputs">
+                <div class="input-section">
+                  <h3>Configuration</h3>
+                  <div class="config-inputs">
+                    <div class="input-group">
+                      <label for="numProcess">Number of Processes:</label>
+                      <input type="number" id="numProcess" min="1" max="10" value="">
+                    </div>
+                    <div class="input-group">
+                      <label for="timeQuantum">Time Quantum:</label>
+                      <input type="number" id="timeQuantum" min="1" max="20" value="">
+                    </div>
+                    <button class="btn btn-primary" id="generateButton">Generate Process Inputs</button>
+                  </div>
+                </div>
+                
+                <div id="processForm" class="process-form"></div>
+                
+                <div id="simulateButtonContainer" class="actions" style="display: none;">
+                  <button class="btn btn-primary" id="simulateButton">Simulate Round Robin</button>
+                </div>
+              </div>
+              
+              <div id="results" class="results" style="display: none;">
+                <h3>Scheduling Results</h3>
+                
+                <div class="table-container">
+                  <table id="resultsTable">
+                    <thead>
+                      <tr>
+                        <th>Process</th>
+                        <th>Arrival Time</th>
+                        <th>Burst Time</th>
+                        <th>Completion Time</th>
+                        <th>Turnaround Time</th>
+                        <th>Waiting Time</th>
+                      </tr>
+                    </thead>
+                    <tbody id="resultsBody"></tbody>
+                  </table>
+                </div>
+                
+                <div class="log-container">
+                  <h3>Execution Log</h3>
+                  <div id="executionLog" class="execution-log"></div>
+                </div>
+                
+                <div class="gantt-container">
+                  <h3>Gantt Chart</h3>
+                  <div id="ganttChart" class="gantt-chart"></div>
+                  <div id="ganttTimeline" class="gantt-timeline"></div>
+                </div>
+                
+                <div class="metrics-section">
+                  <h3>Performance Metrics</h3>
+                  <div class="metrics-grid">
+                    <div class="metric-item">
+                      <div class="metric-title">Average Turnaround Time</div>
+                      <div id="avgTurnaround" class="metric-value">0.00 units</div>
+                    </div>
+                    <div class="metric-item">
+                      <div class="metric-title">Average Waiting Time</div>
+                      <div id="avgWaiting" class="metric-value">0.00 units</div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="actions">
+                  <button class="btn btn-primary" id="resetButton">Create New Simulation</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="tab-content" id="explanation">
+            <div class="explanation-container">
+              <div class="explanation-card">
+                <h3 class="card-title">What is Round Robin Scheduling?</h3>
+                <p class="card-text">
+                  Round Robin (RR) is a CPU scheduling algorithm where each process is assigned a fixed time slot in a cyclic way. 
+                  It is designed especially for time-sharing systems and is preemptive in nature. The scheduler assigns a fixed time unit per process, called a quantum or time slice, and cycles through them.
+                  Once a process is executed for the given time period, it's preempted and the next process in the queue is executed.
+                </p>
+              </div>
 
-        <form id="processForm" class="process-form"></form>
+              <div class="explanation-card">
+                <h3 class="card-title">Key Concepts</h3>
+                <ul class="concept-list">
+                  <li>
+                    <span class="bullet"></span>
+                    <span>
+                      <strong class="concept-title">Time Quantum:</strong> Fixed time period allocated to each process for execution.
+                    </span>
+                  </li>
+                  <li>
+                    <span class="bullet"></span>
+                    <span>
+                      <strong class="concept-title">Ready Queue:</strong> Circular queue containing all processes waiting for CPU time.
+                    </span>
+                  </li>
+                  <li>
+                    <span class="bullet"></span>
+                    <span>
+                      <strong class="concept-title">Context Switch:</strong> Overhead involved in switching from one process to another.
+                    </span>
+                  </li>
+                  <li>
+                    <span class="bullet"></span>
+                    <span>
+                      <strong class="concept-title">Turnaround Time:</strong> Time taken from submission to completion (Completion Time - Arrival Time).
+                    </span>
+                  </li>
+                  <li>
+                    <span class="bullet"></span>
+                    <span>
+                      <strong class="concept-title">Waiting Time:</strong> Time a process waits in the ready queue (Turnaround Time - Burst Time).
+                    </span>
+                  </li>
+                </ul>
+              </div>
 
-        <div class="button-center" id="simulateButtonContainer" style="display: none;">
-          <button id="simulateButton">Simulate Round Robin</button>
+              <div class="explanation-card">
+                <h3 class="card-title">How the Algorithm Works</h3>
+                
+                <div class="algorithm-step">
+                  <h4 class="step-title">1. Queue Initialization</h4>
+                  <p class="step-text">
+                    Processes are placed in a queue in the order they arrive in the system.
+                  </p>
+                </div>
+                
+                <div class="algorithm-step">
+                  <h4 class="step-title">2. Processing</h4>
+                  <p class="step-text">
+                    The CPU is allocated to a process for a time interval of up to one time quantum. If the process's remaining burst time is less than one time quantum, the process is executed until completion. Otherwise, the process is preempted after the time quantum expires and placed at the back of the ready queue.
+                  </p>
+                </div>
+                
+                <div class="algorithm-step">
+                  <h4 class="step-title">3. Cyclic Execution</h4>
+                  <p class="step-text">
+                    The scheduler picks the next process from the front of the queue and repeats step 2 until all processes are completed.
+                  </p>
+                </div>
+                
+                <div class="algorithm-step">
+                  <h4 class="step-title">4. Completion</h4>
+                  <p class="step-text">
+                    When all processes are executed, the algorithm calculates performance metrics like average turnaround time and average waiting time.
+                  </p>
+                </div>
+              </div>
+
+              <div class="explanation-card">
+                <h3 class="card-title">Advantages & Limitations</h3>
+                
+                <div class="advantages-limitations">
+                  <div class="advantages">
+                    <h4 class="advantage-title">Advantages</h4>
+                    <ul class="advantage-list">
+                      <li>
+                        <span class="check">✓</span>
+                        <span>Fair allocation of CPU among processes</span>
+                      </li>
+                      <li>
+                        <span class="check">✓</span>
+                        <span>Lower response time for all processes</span>
+                      </li>
+                      <li>
+                        <span class="check">✓</span>
+                        <span>Good for time-sharing environments</span>
+                      </li>
+                      <li>
+                        <span class="check">✓</span>
+                        <span>Prevents process starvation</span>
+                      </li>
+                    </ul>
+                  </div>
+                  
+                  <div class="limitations">
+                    <h4 class="limitation-title">Limitations</h4>
+                    <ul class="limitation-list">
+                      <li>
+                        <span class="cross">✗</span>
+                        <span>Higher context switching overhead</span>
+                      </li>
+                      <li>
+                        <span class="cross">✗</span>
+                        <span>Time quantum selection is critical for performance</span>
+                      </li>
+                      <li>
+                        <span class="cross">✗</span>
+                        <span>Not optimal for processes with varying burst times</span>
+                      </li>
+                      <li>
+                        <span class="cross">✗</span>
+                        <span>Increased average waiting time for longer processes</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+        
+        <footer class="footer">
+          <p>© <span id="current-year"></span> Round Robin Scheduling Visualizer Pro. All rights reserved.</p>
+        </footer>
       </div>
     </div>
-
-    <div id="resultsSection" style="display: none;">
-      <div class="card">
-        <h2 class="card-title">Scheduling Results</h2>
-        <div class="table-container">
-          <table id="resultsTable">
-            <thead>
-              <tr>
-                <th>Process</th>
-                <th>Arrival</th>
-                <th>Burst</th>
-                <th>Completion</th>
-                <th>Turnaround</th>
-                <th>Waiting</th>
-              </tr>
-            </thead>
-            <tbody id="resultsBody"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="card">
-        <h2 class="card-title">Execution Log</h2>
-        <div id="executionLog" class="log-section"></div>
-      </div>
-
-      <div class="card">
-        <h2 class="card-title">Gantt Chart</h2>
-        <div id="ganttChart" class="gantt-chart"></div>
-        <div id="ganttTimeline" class="gantt-timeline"></div>
-      </div>
-
-      <div class="card">
-        <h2 class="card-title">Performance Metrics</h2>
-        <div class="metrics-grid">
-          <div class="metric-item">
-            <div class="metric-title">Average Turnaround Time</div>
-            <div id="avgTurnaround" class="metric-value">0.00 units</div>
-          </div>
-          <div class="metric-item">
-            <div class="metric-title">Average Waiting Time</div>
-            <div id="avgWaiting" class="metric-value">0.00 units</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="button-center">
-        <button id="resetButton">Create New Simulation</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // DOM Elements
-      const backButton = document.getElementById('backButton');
-      const numProcessInput = document.getElementById('numProcess');
-      const timeQuantumInput = document.getElementById('timeQuantum');
-      const generateButton = document.getElementById('generateButton');
-      const processForm = document.getElementById('processForm');
-      const simulateButtonContainer = document.getElementById('simulateButtonContainer');
-      const simulateButton = document.getElementById('simulateButton');
-      const resetButton = document.getElementById('resetButton');
-      const configSection = document.getElementById('configSection');
-      const resultsSection = document.getElementById('resultsSection');
-      const resultsBody = document.getElementById('resultsBody');
-      const executionLog = document.getElementById('executionLog');
-      const ganttChart = document.getElementById('ganttChart');
-      const ganttTimeline = document.getElementById('ganttTimeline');
-      const avgTurnaround = document.getElementById('avgTurnaround');
-      const avgWaiting = document.getElementById('avgWaiting');
-
-      // Event Listeners
-      backButton.addEventListener('click', () => {
-  window.location.href = 'index.html#algorithms';
-});
-
-      generateButton.addEventListener('click', generateInputs);
-      simulateButton.addEventListener('click', simulateRR);
-      resetButton.addEventListener('click', resetSimulation);
-
-      // Functions
-      function generateInputs() {
-        const n = parseInt(numProcessInput.value);
-        const tq = parseInt(timeQuantumInput.value);
-
-        if (isNaN(n) || n <= 0 || isNaN(tq) || tq <= 0) {
-          alert('Please enter valid values for the number of processes and time quantum.');
-          return;
-        }
-
-        processForm.innerHTML = '';
-        for (let i = 0; i < n; i++) {
-          const processItem = document.createElement('div');
-          processItem.className = 'process-item';
-          processItem.innerHTML = `
-            <label>Process P${i + 1}</label>
-            <div class="input-group">
-              <label>Arrival Time:</label>
-              <input type="number" id="arrival${i}" min="0" value="0">
-            </div>
-            <div class="input-group">
-              <label>Burst Time:</label>
-              <input type="number" id="burst${i}" min="1" value="1">
-            </div>
-          `;
-          processForm.appendChild(processItem);
-        }
-        simulateButtonContainer.style.display = 'flex';
-      }
-
-      function simulateRR() {
-        const n = parseInt(numProcessInput.value);
-        const tq = parseInt(timeQuantumInput.value);
-
-        if (isNaN(n) || n <= 0 || isNaN(tq) || tq <= 0) {
-          alert('Please enter valid values for the number of processes and time quantum.');
-          return;
-        }
-
-        let processes = [];
-        let validProcesses = true;
-
-        for (let i = 0; i < n; i++) {
-          const arrivalInput = document.getElementById(`arrival${i}`);
-          const burstInput = document.getElementById(`burst${i}`);
-
-          const arrival = parseInt(arrivalInput.value);
-          const burst = parseInt(burstInput.value);
-
-          if (isNaN(arrival) || isNaN(burst) || burst <= 0) {
-            alert(`Please enter valid values for Process P${i + 1}`);
-            validProcesses = false;
-            break;
-          }
-
-          processes.push({ id: i + 1, arrival, burst, remaining: burst });
-        }
-
-        if (!validProcesses) return;
-
-        // Round Robin Scheduling Logic
-        processes.sort((a, b) => a.arrival - b.arrival);
-        let time = 0;
-        let queue = [];
-        let completed = 0;
-        let log = [];
-        let visited = new Array(n).fill(false);
-        let ganttData = [];
-        let totalTurnaround = 0;
-        let totalWaiting = 0;
-
-        while (completed < n) {
-          // Add processes to queue
-          for (let i = 0; i < n; i++) {
-            if (!visited[i] && processes[i].arrival <= time) {
-              queue.push(processes[i]);
-              visited[i] = true;
-            }
-          }
-
-          if (queue.length === 0) {
-            time++;
-            continue;
-          }
-
-          let current = queue.shift();
-          if (!current.start) current.start = time;
-
-          if (current.remaining > tq) {
-            time += tq;
-            current.remaining -= tq;
-            log.push(`P${current.id} executed from ${time - tq} to ${time}`);
-            ganttData.push({ id: current.id, start: time - tq, end: time });
-          } else {
-            time += current.remaining;
-            log.push(`P${current.id} executed from ${time - current.remaining} to ${time}`);
-            ganttData.push({ id: current.id, start: time - current.remaining, end: time });
-            current.remaining = 0;
-            current.completion = time;
-            completed++;
-          }
-
-          // Push any new processes that arrived during this slice
-          for (let i = 0; i < n; i++) {
-            if (!visited[i] && processes[i].arrival <= time) {
-              queue.push(processes[i]);
-              visited[i] = true;
-            }
-          }
-
-          // Push current back to queue if not done
-          if (current.remaining > 0) {
-            queue.push(current);
-          }
-        }
-
-        // Calculate turnaround and waiting times
-        processes.forEach(p => {
-          p.turnaround = p.completion - p.arrival;
-          p.waiting = p.turnaround - p.burst;
-          totalTurnaround += p.turnaround;
-          totalWaiting += p.waiting;
-        });
-
-        // Show results
-        configSection.style.display = 'none';
-        resultsSection.style.display = 'block';
-
-        // Update table
-        resultsBody.innerHTML = '';
-        processes.forEach(p => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>P${p.id}</td>
-            <td>${p.arrival}</td>
-            <td>${p.burst}</td>
-            <td>${p.completion}</td>
-            <td>${p.turnaround}</td>
-            <td>${p.waiting}</td>
-          `;
-          resultsBody.appendChild(row);
-        });
-
-        // Update log
-        executionLog.innerHTML = '';
-        log.forEach(entry => {
-          const logLine = document.createElement('div');
-          logLine.className = 'log-line';
-          logLine.textContent = entry;
-          executionLog.appendChild(logLine);
-        });
-
-        // Update metrics
-        const avgTurnValue = totalTurnaround / n;
-        const avgWaitValue = totalWaiting / n;
-
-        avgTurnaround.textContent = avgTurnValue.toFixed(2) + ' units';
-        avgWaiting.textContent = avgWaitValue.toFixed(2) + ' units';
-
-        // Create Gantt chart
-        createGanttChart(ganttData, time);
-      }
-
-      function createGanttChart(ganttData, totalTime) {
-        ganttChart.innerHTML = '';
-        ganttTimeline.innerHTML = '';
-
-        if (ganttData.length === 0) return;
-
-        // Colors for the Gantt chart
-        const colors = [
-          '#00BCD4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39',
-          '#FFEB3B', '#FFC107', '#FF9800', '#FF5722', '#795548'
-        ];
-
-        // Create processes in Gantt chart
-        ganttData.forEach((p, index) => {
-          const block = document.createElement('div');
-          block.className = 'gantt-process';
-          block.style.left = (p.start / totalTime * 100) + '%';
-          block.style.width = ((p.end - p.start) / totalTime * 100) + '%';
-          block.style.backgroundColor = colors[(p.id - 1) % colors.length];
-          block.textContent = 'P' + p.id;
-          ganttChart.appendChild(block);
-        });
-
-        // Create timeline markers
-        const markers = 5; // Number of time markers to show
-        for (let i = 0; i <= markers; i++) {
-          const time = Math.round((totalTime / markers) * i);
-          const marker = document.createElement('span');
-          marker.textContent = time;
-          ganttTimeline.appendChild(marker);
-        }
-      }
-
-      function resetSimulation() {
-        configSection.style.display = 'block';
-        resultsSection.style.display = 'none';
-        processForm.innerHTML = '';
-        simulateButtonContainer.style.display = 'none';
-        numProcessInput.value = '';
-        timeQuantumInput.value = '';
-      }
-    });
-  </script>
-</body>
+    
+    <script src="script.js"></script>
+  </body>
 </html>
